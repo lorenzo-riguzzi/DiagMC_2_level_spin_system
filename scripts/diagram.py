@@ -31,3 +31,23 @@ class Diagram():
         self.vertices = [] if vertices is None else vertices
         self.Gamma = Gamma
         self.h = h
+    
+    def evaluate_mz_of_diagram(self) -> float:
+        """ Evaluate the magnetization m_z along the z axis of the diagram.
+            
+            PARAMETERS (taken from the class):
+            s_0: spin of the initial segment
+            beta: inverse temperature
+            vertices[i]: time intervals at which the flips occur       
+        """
+        
+        n_vertices = len(self.vertices)
+        if n_vertices == 0:
+            return self.s_0
+        else:
+            sum_with_alternating_sign = 0
+            for i in range(n_vertices):
+                sum_with_alternating_sign += (-1)**(i+1) * self.vertices[i] #the +1 is needed because the sum starts from 1
+            
+            m_z =self.s_0 - 2* self.s_0 * sum_with_alternating_sign / self.beta
+            return m_z
