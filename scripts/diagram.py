@@ -59,8 +59,8 @@ class Diagram():
             Gamma: external field along the x axis
             beta: inverse temperature
         """
-        if self.Gamma == 0:
-            m_x = 0
+        if self.Gamma == 0.0:
+            m_x = 0.0
             return m_x
         else:
             m_x = self.number_vertices / (self.Gamma * self.beta)
@@ -85,12 +85,11 @@ class Diagram():
             
             PARAMETERS (taken from the class):
             beta: inverse temperature
-            s_0: spin of the initial segment
             h: field along the z direction
             Gamma: field along the x direction
             number_vertices: number of vertices of the diagram
-            tau_i: beginning of the new added vertex
-            tau_f: end of the new added vertex
+            tau_i: beginning of the new added segment
+            tau_f: end of the new added segment
             segment_spin: spin of the new added segment (can be either +/-1)
             tau_after_f: position of the vertex located after tau_f
         """
@@ -99,4 +98,22 @@ class Diagram():
         q_ratio = self.beta*(tau_after_f-tau_i) / (self.number_vertices+1) #ratio between the proposal distributions
         alpha_add = min(1, weight_ratio * q_ratio)
         return alpha_add
+    
+    def acceptance_rate_remove_segment(self, tau_i: float, tau_f: float, segment_spin: int, tau_after_f: float) -> float:
+        """ Evaluate the acceptance rate for adding a segment to the diagram
+            
+            PARAMETERS (taken from the class):
+            beta: inverse temperature
+            h: field along the z direction
+            Gamma: field along the x direction
+            number_vertices: number of vertices of the diagram
+            tau_i: beginning of the removed segment
+            tau_f: end of the removed segment
+            segment_spin: spin of the removed segment (can be either +/-1)
+            tau_after_f: position of the vertex located after tau_f
+        """
         
+        weight_ratio = self.Gamma**(-2)*math.exp(2*self.h*segment_spin*(tau_f-tau_i))
+        q_ratio = (self.number_vertices-1) / (self.beta*(tau_after_f-tau_i)) #ratio between the proposal distributions
+        alpha_remove = min(1, weight_ratio * q_ratio)
+        return alpha_remove

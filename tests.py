@@ -68,7 +68,7 @@ def test_m_x_calculation():
     assert pytest.approx(diagram.evaluate_m_x_of_diagram()) == 1.5
 
 def test_acceptance_rate_flip():
-    """Tests for the acceptance rate of a spin flip. Ensures that the calculation is done correctly"""
+    """Tests for the acceptance rate of a spin flip. Ensure that the calculation is done correctly"""
     diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0], h=0.5)
     assert pytest.approx(diagram.acceptance_rate_flip()) == 0.36787944117144
     
@@ -76,12 +76,29 @@ def test_acceptance_rate_flip():
     assert pytest.approx(diagram.acceptance_rate_flip()) == 1
 
 def test_acceptance_rate_add_segment():
-    """Tests for the acceptance rate of adding a segment. Ensures that the calculation is done correctly"""
+    """Tests for the acceptance rate of adding a segment. Ensure that the calculation is done correctly"""
     diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=2.0)
     assert pytest.approx(diagram.acceptance_rate_add_segment(tau_i=1.5, tau_f = 1.8, segment_spin=-1, tau_after_f=2.0))  == 1
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=2.0)
+    assert pytest.approx(diagram.acceptance_rate_add_segment(tau_i=1.5, tau_f = 1.8, segment_spin=1, tau_after_f=2.0))  == 1
     
     diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=1.0)
     assert pytest.approx(diagram.acceptance_rate_add_segment(tau_i=1.5, tau_f = 1.8, segment_spin=-1, tau_after_f=2.0))  == 0.84366175
     
     diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=1.0)
     assert pytest.approx(diagram.acceptance_rate_add_segment(tau_i=1.5, tau_f = 1.8, segment_spin=1, tau_after_f=2.0))  == 0.46301139
+
+def test_acceptance_rate_remove_segment():
+    """Tests for the acceptance rate of removing a segment. Ensure that the calculation is done correctly"""
+    diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=2.0)
+    assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=1.5, tau_f = 1.8, segment_spin=-1, tau_after_f=2.0))  == 0.1481636
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=2.0)
+    assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=1.5, tau_f = 1.8, segment_spin=1, tau_after_f=2.0))  == 0.2699718
+    
+    diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=1.0)
+    assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=1.5, tau_f = 1.8, segment_spin=-1, tau_after_f=2.0))  == 0.59265458
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=1.0)
+    assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=1.5, tau_f = 1.8, segment_spin=1, tau_after_f=2.0))  == 1
