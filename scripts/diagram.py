@@ -36,6 +36,9 @@ class Diagram():
             self.vertices = sorted(list(vertices))
         self.Gamma = Gamma
         self.h = h
+        
+        #evaluate the sum with alternating sign of the vertices, needed for the evaluation of m_z
+        self.sum_with_alternating_sign = sum((-1)**(i+1) * v for i, v in enumerate(self.vertices)) #the +1 is needed because the sum starts from 1
     
     def evaluate_mz_of_diagram(self) -> float:
         """ Evaluate the magnetization m_z along the z axis of the diagram.
@@ -45,14 +48,5 @@ class Diagram():
             beta: inverse temperature
             vertices[i]: time intervals at which the flips occur       
         """
-        
-        n_vertices = len(self.vertices)
-        if n_vertices == 0:
-            return self.s_0
-        else:
-            sum_with_alternating_sign = 0
-            for i in range(n_vertices):
-                sum_with_alternating_sign += (-1)**(i+1) * self.vertices[i] #the +1 is needed because the sum starts from 1
-            
-            m_z =self.s_0 - 2* self.s_0 * sum_with_alternating_sign / self.beta
-            return m_z
+        m_z =self.s_0 - 2* self.s_0 * self.sum_with_alternating_sign / self.beta
+        return m_z
