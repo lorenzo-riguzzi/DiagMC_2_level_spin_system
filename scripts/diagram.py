@@ -1,5 +1,5 @@
 from typing import Optional
-
+import math
 class Diagram():
     
     """ This class implements the Feynman diagram of a single spin 1/2 particle. 
@@ -41,12 +41,41 @@ class Diagram():
         self.sum_with_alternating_sign = sum((-1)**(i+1) * v for i, v in enumerate(self.vertices)) #the +1 is needed because the sum starts from 1
     
     def evaluate_mz_of_diagram(self) -> float:
-        """ Evaluate the magnetization m_z along the z axis of the diagram.
+        """ Evaluate the magnetization along the z axis of the diagram.
             
             PARAMETERS (taken from the class):
             s_0: spin of the initial segment
             beta: inverse temperature
-            vertices[i]: time intervals at which the flips occur       
+            sum_with_alternating_sign: sum of the vertices with alternating sign       
         """
         m_z =self.s_0 - 2* self.s_0 * self.sum_with_alternating_sign / self.beta
         return m_z
+    
+    def evaluate_m_x_of_diagram(self) -> float:
+        """ Evaluate the magnetization along the x axis of the diagram.
+            
+            PARAMETERS (taken from the class):
+            Gamma: external field along the x axis
+            beta: inverse temperature
+        """
+        if self.Gamma == 0:
+            m_x = 0
+            return m_x
+        else:
+            number_vertices = len(self.vertices) #Number of vertices of the diagram
+            m_x = number_vertices / (self.Gamma * self.beta)
+            return m_x
+    
+    def acceptance_rate_flip(self) -> float:
+        """ Evaluate the acceptance rate for a spin flip
+            
+            PARAMETERS (taken from the class):
+            beta: inverse temperature
+            s_0: spin of the initial segment
+            h: field along the z direction
+            sum_with_alternating_sign: sum of the vertices with alternating sign
+        """
+        
+        weight_ratio = math.exp(2*self.h*self.s_0*(self.beta+2*self.sum_with_alternating_sign)) 
+        alpha_flip = min(1, weight_ratio)
+        return alpha_flip

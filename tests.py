@@ -42,7 +42,7 @@ def test_vertices_sorting():
     diagram = Diagram(beta=1.0, vertices=[0.5, 0.2, 0.8, 0.3])
     assert pytest.approx(diagram.vertices) == [0.2, 0.3, 0.5, 0.8]
 
-def test_mz_calculation():
+def test_m_z_calculation():
     """Tests the estimator for the magnetization along the z axis of a diagram"""
     diagram = Diagram(beta = 1.0, s_0=1)
     assert diagram.evaluate_mz_of_diagram() == 1.0
@@ -55,3 +55,24 @@ def test_mz_calculation():
     
     diagram = Diagram(beta = 5.0, s_0=-1, vertices=[3.0, 1.0, 2.0]) #tested with an unsorted list   
     assert pytest.approx(diagram.evaluate_mz_of_diagram()) == -1.8
+
+def test_m_x_calculation():
+    """Tests the estimator for the magnetization along the x axis of a diagram"""
+    diagram = Diagram(beta = 1.0, Gamma=0) #absence of field in the x direction
+    assert diagram.evaluate_m_x_of_diagram() == 0.0 
+    
+    diagram = Diagram(beta = 1.0, Gamma=2.0) #absence of vertices
+    assert diagram.evaluate_m_x_of_diagram() == 0
+    
+    diagram = Diagram(beta = 1.0, Gamma=2.0, vertices = [0.5, 0.7, 0.2])
+    assert pytest.approx(diagram.evaluate_m_x_of_diagram()) == 1.5
+
+def test_acceptance_rate_flip():
+    """Tests for the acceptance rate of a spin flip. Ensures that the calculation is done correctly"""
+    diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0], h=0.5)
+    assert pytest.approx(diagram.acceptance_rate_flip()) == 0.36787944117144
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0], h=0.5)
+    assert pytest.approx(diagram.acceptance_rate_flip()) == 1
+    
+    
