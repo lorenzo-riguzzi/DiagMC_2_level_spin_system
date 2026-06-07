@@ -39,6 +39,7 @@ class Diagram():
         
         #evaluate the sum with alternating sign of the vertices, needed for the evaluation of m_z
         self.sum_with_alternating_sign = sum((-1)**(i+1) * v for i, v in enumerate(self.vertices)) #the +1 is needed because the sum starts from 1
+        self.number_vertices = len(self.vertices) #Number of vertices of the diagram
     
     def evaluate_mz_of_diagram(self) -> float:
         """ Evaluate the magnetization along the z axis of the diagram.
@@ -62,8 +63,7 @@ class Diagram():
             m_x = 0
             return m_x
         else:
-            number_vertices = len(self.vertices) #Number of vertices of the diagram
-            m_x = number_vertices / (self.Gamma * self.beta)
+            m_x = self.number_vertices / (self.Gamma * self.beta)
             return m_x
     
     def acceptance_rate_flip(self) -> float:
@@ -79,3 +79,24 @@ class Diagram():
         weight_ratio = math.exp(2*self.h*self.s_0*(self.beta+2*self.sum_with_alternating_sign)) 
         alpha_flip = min(1, weight_ratio)
         return alpha_flip
+    
+    def acceptance_rate_add_segment(self, tau_f: float, tau_i: float, segment_spin: int, tau_after_f: float) -> float:
+        """ Evaluate the acceptance rate for adding a segment to the diagram
+            
+            PARAMETERS (taken from the class):
+            beta: inverse temperature
+            s_0: spin of the initial segment
+            h: field along the z direction
+            Gamma: field along the x direction
+            number_vertices: number of vertices of the diagram
+            tau_i: beginning of the new added vertex
+            tau_f: end of the new added vertex
+            segment_spin: spin of the new added segment (can be either +/-1)
+            tau_after_f: position of the vertex located after tau_f
+        """
+        
+        weight_ratio = self.Gamma**2*math.exp(-2*self.h*segment_spin*(tau_f-tau_i))
+        q_ratio = self.beta*(tau_after_f-tau_i) / (self.number_vertices+1) #ratio between the proposal distributions
+        alpha_add = min(1, weight_ratio * q_ratio)
+        return alpha_add
+        
