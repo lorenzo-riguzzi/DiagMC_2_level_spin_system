@@ -28,7 +28,12 @@ class Diagram():
         
         self.beta = beta
         self.s_0 = s_0
-        self.vertices = [] if vertices is None else vertices
+        if vertices is None:
+            self.vertices = []
+        else:
+            if max(list(vertices)) >= beta or min(list(vertices)) <= 0:
+                raise ValueError(f"All vertices must be positive and less than beta, since beta is the length of the diagram.")
+            self.vertices = sorted(list(vertices))
         self.Gamma = Gamma
         self.h = h
     
