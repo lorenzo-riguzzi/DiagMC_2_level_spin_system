@@ -124,7 +124,6 @@ class Diagram():
     
     def try_flip_spin(self, random_number: float) -> None:
         """ Try to flip the spin of the diagram, by comparing a random number with the acceptance rate of the flip. 
-            If the random number is smaller than the acceptance rate, the flip is accepted and the function returns True, otherwise it returns False.
             
             EXTERNAL PARAMETERS:
             random_number: random number between 0 and 1 used to decide whether to accept or reject the flip
