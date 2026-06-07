@@ -88,6 +88,8 @@ class Diagram():
             h: field along the z direction
             Gamma: field along the x direction
             number_vertices: number of vertices of the diagram
+            
+            EXTERNAL PARAMETERS:
             tau_i: beginning of the new added segment
             tau_f: end of the new added segment
             segment_spin: spin of the new added segment (can be either +/-1)
@@ -107,6 +109,8 @@ class Diagram():
             h: field along the z direction
             Gamma: field along the x direction
             number_vertices: number of vertices of the diagram
+            
+            EXTERNAL PARAMETERS:
             tau_i: beginning of the removed segment
             tau_f: end of the removed segment
             segment_spin: spin of the removed segment (can be either +/-1)
@@ -117,3 +121,18 @@ class Diagram():
         q_ratio = (self.number_vertices-1) / (self.beta*(tau_after_f-tau_i)) #ratio between the proposal distributions
         alpha_remove = min(1, weight_ratio * q_ratio)
         return alpha_remove
+    
+    def try_flip_spin(self, random_number: float) -> None:
+        """ Try to flip the spin of the diagram, by comparing a random number with the acceptance rate of the flip. 
+            If the random number is smaller than the acceptance rate, the flip is accepted and the function returns True, otherwise it returns False.
+            
+            EXTERNAL PARAMETERS:
+            random_number: random number between 0 and 1 used to decide whether to accept or reject the flip
+        """
+        
+        if random_number < 0 or random_number > 1:
+            raise ValueError(f"Random number must be between 0 and 1. Current value is {random_number}.")
+        
+        alpha_flip = self.acceptance_rate_flip()
+        if random_number < alpha_flip:
+            self.s_0 *= -1

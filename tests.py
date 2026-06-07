@@ -102,3 +102,16 @@ def test_acceptance_rate_remove_segment():
     
     diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma=1.0)
     assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=1.5, tau_f = 1.8, segment_spin=1, tau_after_f=2.0))  == 1
+
+def test_try_flip_spin():
+    """Tests that the try_flip_spin method correctly updates the diagram"""
+    diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0], h=0.5, Gamma = 1.0)
+    
+    with pytest.raises(ValueError):
+        diagram.try_flip_spin(2.3) #Ensures a ValueError is raised if the random number is greater than 1
+    
+    diagram.try_flip_spin(0.8)
+    assert diagram.s_0 == -1 #Ensures that the spin is not flipped since the acceptance rate is 0.36787944117144
+    
+    diagram.try_flip_spin(0.1)
+    assert diagram.s_0 == 1 #Ensures that the spin is flipped since the acceptance rate is 0.36787944117144
