@@ -25,6 +25,8 @@ class Diagram():
             raise ValueError(f"Beta must be a positive number. Current value is {beta}.")
         if s_0 not in [-1, 1]:
             raise ValueError(f"s_0 must be either -1 or 1. Current value is {s_0}.")
+        if vertices is not None and len(vertices) % 2 != 0:
+            raise ValueError(f"The number of vertices must be even, since odd order diagrams have zero weight contribution. Current number of vertices is {len(vertices)}.")
         
         self.beta = beta
         self.s_0 = s_0
