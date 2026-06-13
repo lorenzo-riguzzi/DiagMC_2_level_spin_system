@@ -115,8 +115,8 @@ def test_try_flip_spin():
     with pytest.raises(ValueError):
         diagram.try_flip_spin(2.3) #Ensures a ValueError is raised if the random number is greater than 1
     
-    diagram.try_flip_spin(0.8)
-    assert diagram.s_0 == -1 #Ensures that the spin is not flipped since the acceptance rate is 0.36787944117144
+    diagram.try_flip_spin(0.00013)
+    assert diagram.s_0 == -1 #Ensures that the spin is not flipped since the acceptance rate is 0.0001234098041
     
-    diagram.try_flip_spin(0.0000001)
-    assert diagram.s_0 == 1 #Ensures that the spin is flipped since the acceptance rate is 0.36787944117144
+    diagram.try_flip_spin(0.00011)
+    assert diagram.s_0 == 1 #Ensures that the spin is flipped since the acceptance rate is 0.0001234098041
