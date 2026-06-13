@@ -120,3 +120,22 @@ def test_try_flip_spin():
     
     diagram.try_flip_spin(0.00011)
     assert diagram.s_0 == 1 #Ensures that the spin is flipped since the acceptance rate is 0.0001234098041
+
+
+def test_try_add_segment():
+    """Tests that the try_add_segment method correctly updates the diagram"""
+    diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0, 4.0], h=0.5, Gamma=1.0)
+    
+    with pytest.raises(ValueError):
+        diagram.try_add_segment(1.2, tau_f=1.8, tau_i=1.5) #Ensures a ValueError is raised if the random number is greater than 1
+    
+    diagram.try_add_segment(0.7, tau_f=1.8, tau_i=1.5)
+    assert pytest.approx(diagram.vertices) == [1.0, 2.0, 3.0, 4.0] #Ensures that the segment is not added since the acceptance rate is 0.6749294
+    
+    diagram.try_add_segment(0.6, tau_f=1.8, tau_i=1.5)
+    assert pytest.approx(diagram.vertices) == [1.0, 1.5, 1.8, 2.0, 3.0, 4.0] #Ensures that the segment is added since the acceptance rate is 0.6749294
+    
+    assert pytest.approx(diagram.sum_with_alternating_sign) == 1.7 #Ensures that the sum with alternating sign is correctly updated
+    
+    assert pytest.approx(diagram.number_vertices) == 6 #Ensures that the number of vertices is correctly updated
+    

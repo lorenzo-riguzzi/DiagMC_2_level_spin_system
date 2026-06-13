@@ -82,7 +82,7 @@ class Diagram():
         alpha_flip = min(1, weight_ratio)
         return alpha_flip
     
-    def acceptance_rate_add_segment(self, tau_f: float, tau_i: float, segment_spin: int, tau_after_f: float) -> float:
+    def acceptance_rate_add_segment(self, tau_i: float, tau_f: float, tau_after_f: float, segment_spin: int,) -> float:
         """ Evaluate the acceptance rate for adding a segment to the diagram
             
             PARAMETERS (taken from the class):
@@ -137,3 +137,40 @@ class Diagram():
         alpha_flip = self.acceptance_rate_flip()
         if random_number < alpha_flip:
             self.s_0 *= -1
+        else:
+            return
+    
+    def try_add_segment(self, random_number: float, tau_f: float, tau_i: float) -> None:
+        """ Try to add a segment to the diagram, by comparing a random number with the acceptance rate of adding a segment. 
+            
+            EXTERNAL PARAMETERS:
+            random_number: random number between 0 and 1 used to decide whether to accept or reject the addition of the segment
+            tau_i: beginning of the new added segment
+            tau_f: end of the new added segment
+            segment_spin: spin of the new added segment (can be either +/-1)
+        """
+        
+        if random_number < 0 or random_number > 1:
+            raise ValueError(f"Random number must be between 0 and 1. Current value is {random_number}.")
+        
+        """Finds the vertex right after tau_f and its index.
+            The index correspond to the one of tau_i once it's inserted.
+            If no match is found the vertex next to tau_f is beta and its index is number_vertices+1.
+        """
+        
+        index : int
+        tau_after_f : float
+        
+        index, tau_after_f = next(((i, tau) for i, tau in enumerate(self.vertices) if tau > tau_f), (self.number_vertices + 1, self.beta))
+        
+        segment_spin = self.s_0 * (-1)** (index + 1)
+        
+        alpha_add = self.acceptance_rate_add_segment(tau_i, tau_f, tau_after_f, segment_spin)
+        
+        if random_number < alpha_add:
+            self.sum_with_alternating_sign += (-1)**(index + 1) * tau_i + (-1)**(index + 2) * tau_f
+            self.number_vertices += 2
+            self.vertices.insert(index, tau_i)
+            self.vertices.insert(index + 1, tau_f)
+        else:
+            return
