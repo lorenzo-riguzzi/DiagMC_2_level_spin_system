@@ -111,6 +111,13 @@ def test_acceptance_rate_remove_segment():
     
     diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0, 4.0], h=0.5, Gamma=1.0)
     assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=1.5, tau_f = 1.8, tau_after_f=2.0, segment_spin=1))  == 1
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices = [1.0, 3.0, 4.0, 2.0, 4.5, 4.7], h=0.5, Gamma=1.0)
+    assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=3.0, tau_f = 4.0, tau_after_f=4.5, segment_spin=-1))  == 0.2452529608
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices = [1.0, 2.0, 4.5, 4.7], h=0.5, Gamma=1.0)
+    assert pytest.approx(diagram.acceptance_rate_remove_segment(tau_i=4.5, tau_f = 4.7, tau_after_f=5.0, segment_spin=-1))  == 0.9824769037
+
 
 def test_try_flip_spin():
     """Tests that the try_flip_spin method correctly updates the diagram"""
@@ -144,7 +151,7 @@ def test_try_add_segment():
     
     assert pytest.approx(diagram.sum_with_alternating_sign) == 1.7 #Ensures that the sum with alternating sign is correctly updated
     
-    assert pytest.approx(diagram.number_vertices) == 6 #Ensures that the number of vertices is correctly updated
+    assert diagram.number_vertices == 6 #Ensures that the number of vertices is correctly updated
     
     #Ensures that, if the new segment is added at the end, tau_after_f = beta
     
@@ -156,4 +163,48 @@ def test_try_add_segment():
     
     assert pytest.approx(diagram.sum_with_alternating_sign) == 2.3 
     
-    assert pytest.approx(diagram.number_vertices) == 8
+    assert diagram.number_vertices == 8
+
+def test_try_remove_segment():
+    """Tests that the try_remove_segment method correctly updates the diagram"""
+    diagram = Diagram(beta = 5.0, s_0= -1, h=0.5, Gamma=1.0)
+    
+    diagram.try_remove_segment(0.000005, remove_index=0) 
+    assert diagram.vertices == [] #Ensures that the vertices are not updated since the diagram has no vertices
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices = [1.0, 3.0, 4.0, 2.0, 4.5, 4.7], h=0.5, Gamma=1.0)
+    
+    with pytest.raises(ValueError):
+        diagram.try_remove_segment(1.2, remove_index=2) #Ensures a ValueError is raised if the random number is greater than 1
+    
+    with pytest.raises(ValueError):
+        diagram.try_remove_segment(0.5, remove_index=-2) #Ensures a ValueError is raised if the remove index is negative
+    
+    
+    with pytest.raises(ValueError):
+        diagram.try_remove_segment(0.5, remove_index=5) #Ensures a ValueError is raised if the remove index is the last index of the list
+    
+    with pytest.raises(ValueError):
+        diagram.try_remove_segment(0.5, remove_index=7) #Ensures a ValueError is raised if the remove index is greater than the last index of the list
+    
+    diagram.try_remove_segment(0.25, remove_index=2)
+    assert pytest.approx(diagram.vertices) == [1.0, 2.0, 3.0, 4.0, 4.5, 4.7] #Ensures that the segment is not removed since the acceptance rate is 0.2452529608
+    
+    diagram.try_remove_segment(0.24, remove_index=2)
+    assert pytest.approx(diagram.vertices) == [1.0, 2.0, 4.5, 4.7] #Ensures that the segment is removed since the acceptance rate is 0.2452529608
+    
+    assert pytest.approx(diagram.sum_with_alternating_sign) == 1.2 #Ensures that the sum with alternating sign is correctly updated
+    
+    assert diagram.number_vertices == 4 #Ensures that the number of vertices is correctly updated
+    
+    #We ensure that, if we remove the last possible segment, tau_after_f = beta
+    
+    diagram.try_remove_segment(0.99, remove_index=2)
+    assert pytest.approx(diagram.vertices) == [1.0, 2.0, 4.5, 4.7] #Ensures that the segment is not removed since the acceptance rate is 0.9824769037
+    
+    diagram.try_remove_segment(0.98, remove_index=2)
+    assert pytest.approx(diagram.vertices) == [1.0, 2.0] #Ensures that the segment is removed since the acceptance rate is 0.982476903
+    
+    assert pytest.approx(diagram.sum_with_alternating_sign) == 1.0 #Ensures that the sum with alternating sign is correctly updated
+    
+    assert diagram.number_vertices == 2 #Ensures that the number of vertices is correctly updated

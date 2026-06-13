@@ -205,6 +205,7 @@ class Diagram():
             if random_number < alpha_remove:
                 self.sum_with_alternating_sign -= (-1)**(remove_index + 1) * tau_i + (-1)**(remove_index + 2) * tau_f
                 self.number_vertices -= 2
-                del self.vertices[remove_index:remove_index + 1]
+                self.vertices.remove(tau_i)
+                self.vertices.remove(tau_f)
             else:
                 return
