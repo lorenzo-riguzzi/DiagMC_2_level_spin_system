@@ -103,7 +103,7 @@ class Diagram():
         alpha_add = min(1, weight_ratio * q_ratio)
         return alpha_add
     
-    def acceptance_rate_remove_segment(self, tau_i: float, tau_f: float, segment_spin: int, tau_after_f: float) -> float:
+    def acceptance_rate_remove_segment(self, tau_i: float, tau_f: float, tau_after_f: float, segment_spin: int) -> float:
         """ Evaluate the acceptance rate for adding a segment to the diagram
             
             PARAMETERS (taken from the class):
@@ -147,11 +147,13 @@ class Diagram():
             random_number: random number between 0 and 1 used to decide whether to accept or reject the addition of the segment
             tau_i: beginning of the new added segment
             tau_f: end of the new added segment
-            segment_spin: spin of the new added segment (can be either +/-1)
         """
         
         if random_number < 0 or random_number > 1:
             raise ValueError(f"Random number must be between 0 and 1. Current value is {random_number}.")
+        
+        if tau_f < tau_i:
+            raise ValueError(f"tau_f must be greater than tau_i. Current values are tau_f={tau_f} and tau_i={tau_i}.")
         
         """Finds the vertex right after tau_f and its index.
             The index correspond to the one of tau_i once it's inserted.
@@ -161,9 +163,9 @@ class Diagram():
         index : int
         tau_after_f : float
         
-        index, tau_after_f = next(((i, tau) for i, tau in enumerate(self.vertices) if tau > tau_f), (self.number_vertices + 1, self.beta))
+        index, tau_after_f = next(((i, tau) for i, tau in enumerate(self.vertices) if tau > tau_f), (self.number_vertices, self.beta))
         
-        segment_spin = self.s_0 * (-1)** (index + 1)
+        segment_spin = self.s_0 * (-1)**(index + 1)
         
         alpha_add = self.acceptance_rate_add_segment(tau_i, tau_f, tau_after_f, segment_spin)
         
@@ -174,3 +176,35 @@ class Diagram():
             self.vertices.insert(index + 1, tau_f)
         else:
             return
+    
+    def try_remove_segment(self, random_number: float, remove_index : int) -> None:
+        """ Try to remove a segment from the diagram, by comparing a random number with the acceptance rate of removing a segment.
+            The update is discarded automatically if the diagram has no vertices (nothing can be removed).
+            
+            EXTERNAL PARAMETERS:
+            random_number: random number between 0 and 1 used to decide whether to accept or reject the removal of the segment
+            remove_index: index of the first vertex to remove
+        """
+        
+        if self.number_vertices == 0:
+            return
+        else:
+            if random_number < 0 or random_number > 1:
+                raise ValueError(f"Random number must be between 0 and 1. Current value is {random_number}.")
+            
+            if remove_index < 0 or remove_index >= self.number_vertices - 1:
+                raise ValueError(f"remove_index must be a valid index for the diagram.")
+            
+            tau_i = self.vertices[remove_index]
+            tau_f = self.vertices[remove_index + 1]
+            tau_after_f = self.vertices[remove_index + 2] if remove_index + 2 < self.number_vertices else self.beta
+            segment_spin = self.s_0 * (-1)**(remove_index + 1)
+            
+            alpha_remove = self.acceptance_rate_remove_segment(tau_i, tau_f, tau_after_f, segment_spin)
+            
+            if random_number < alpha_remove:
+                self.sum_with_alternating_sign -= (-1)**(remove_index + 1) * tau_i + (-1)**(remove_index + 2) * tau_f
+                self.number_vertices -= 2
+                del self.vertices[remove_index:remove_index + 1]
+            else:
+                return
