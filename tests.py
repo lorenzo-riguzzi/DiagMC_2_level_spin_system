@@ -138,27 +138,35 @@ def test_try_add_segment():
     diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0, 4.0], h=0.5, Gamma=1.0)
     
     with pytest.raises(ValueError):
-        diagram.try_add_segment(1.2, tau_f=1.8, tau_i=1.5) #Ensures a ValueError is raised if the random number is greater than 1
+        diagram.try_add_segment(1.2, tau_f=1.8, tau_i=1.5, tau_after_f=2.0, index=1) #Ensures a ValueError is raised if the random number is greater than 1
     
     with pytest.raises(ValueError):
-        diagram.try_add_segment(0.5, tau_f=1.5, tau_i=1.8) #Ensures a ValueError is raised if tau_f < tau_i
+        diagram.try_add_segment(0.5, tau_f=1.5, tau_i=1.8, tau_after_f=2.0, index=1) #Ensures a ValueError is raised if tau_f < tau_i
     
-    diagram.try_add_segment(0.7, tau_f=1.8, tau_i=1.5)
+    with pytest.raises(ValueError): 
+        diagram.try_add_segment(0.5, tau_f=1.8, tau_i=1.5, tau_after_f=1.6, index=1) #Ensures a ValueError is raised if tau_after_f < tau_f
+    
+    diagram.try_add_segment(0.7, tau_f=1.8, tau_i=1.5, tau_after_f=2.0, index=1)
     assert pytest.approx(diagram.vertices) == [1.0, 2.0, 3.0, 4.0] #Ensures that the segment is not added since the acceptance rate is 0.6749294
     
-    diagram.try_add_segment(0.6, tau_f=1.8, tau_i=1.5)
+    diagram.try_add_segment(0.6, tau_f=1.8, tau_i=1.5, tau_after_f=2.0, index=1)
     assert pytest.approx(diagram.vertices) == [1.0, 1.5, 1.8, 2.0, 3.0, 4.0] #Ensures that the segment is added since the acceptance rate is 0.6749294
     
     assert pytest.approx(diagram.sum_with_alternating_sign) == 1.7 #Ensures that the sum with alternating sign is correctly updated
     
     assert diagram.number_vertices == 6 #Ensures that the number of vertices is correctly updated
     
-    #Ensures that, if the new segment is added at the end, tau_after_f = beta
+    #check how the method works when the segment is added at the end of the list
+    #Ensures that, finding tau_after_f and index in the same way in which they are found int he random method random_try_add_segment, they are chosen correctly to be beta and number_vertices 
     
-    diagram.try_add_segment(0.32, tau_f=4.8, tau_i=4.2)
+    tau_i = 4.2
+    tau_f = 4.8
+    index, tau_after_f = next(((i, tau) for i, tau in enumerate(diagram.vertices) if tau > tau_i), (diagram.number_vertices, diagram.beta))
+    
+    diagram.try_add_segment(0.32, tau_f, tau_i, tau_after_f, index)
     assert pytest.approx(diagram.vertices) == [1.0, 1.5, 1.8, 2.0, 3.0, 4.0] #Ensures that the segment is not added since the acceptance rate is 0.3136066492
         
-    diagram.try_add_segment(0.3, tau_f=4.8, tau_i=4.2)
+    diagram.try_add_segment(0.3, tau_f, tau_i, tau_after_f, index)
     assert pytest.approx(diagram.vertices) == [1.0, 1.5, 1.8, 2.0, 3.0, 4.0, 4.2, 4.8] #Ensures that the segment is added since the acceptance rate is 0.3136066492
     
     assert pytest.approx(diagram.sum_with_alternating_sign) == 2.3 

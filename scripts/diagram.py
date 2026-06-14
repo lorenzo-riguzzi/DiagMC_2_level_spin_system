@@ -141,7 +141,7 @@ class Diagram():
         else:
             return
     
-    def try_add_segment(self, random_number: float, tau_f: float, tau_i: float) -> None:
+    def try_add_segment(self, random_number: float, tau_f: float, tau_i: float, tau_after_f: float, index: int) -> None:
         """ Try to add a segment to the diagram, by comparing a random number with the acceptance rate of adding a segment. 
             
             EXTERNAL PARAMETERS:
@@ -156,15 +156,13 @@ class Diagram():
         if tau_f < tau_i:
             raise ValueError(f"tau_f must be greater than tau_i. Current values are tau_f={tau_f} and tau_i={tau_i}.")
         
+        if tau_after_f < tau_f:
+            raise ValueError(f"tau_after_f must be greater than tau_f. Current values are tau_after_f={tau_after_f} and tau_f={tau_f}.")
+        
         """Finds the vertex right after tau_f and its index.
             The index correspond to the one of tau_i once it's inserted.
             If no match is found the vertex next to tau_f is beta and its index is number_vertices+1.
         """
-        
-        index : int
-        tau_after_f : float
-        
-        index, tau_after_f = next(((i, tau) for i, tau in enumerate(self.vertices) if tau > tau_f), (self.number_vertices, self.beta))
         
         segment_spin = self.s_0 * (-1)**(index + 1)
         
@@ -244,8 +242,11 @@ class Diagram_Random(Diagram):
         """
         tau_i = self.random_generator.uniform(0, self.beta)
         
-        tau_after_f = next((tau for tau in self.vertices if tau > tau_i), self.beta)
+        index: int
+        tau_after_f: float
+        
+        index, tau_after_f = next(((i, tau) for i, tau in enumerate(self.vertices) if tau > tau_i), (self.number_vertices, self.beta))
         tau_f = self.random_generator.uniform(tau_i, tau_after_f)
         
         random_number = self.random_generator.uniform(0, 1)
-        self.try_add_segment(random_number, tau_f, tau_i)
+        self.try_add_segment(random_number, tau_f, tau_i, tau_after_f, index)
