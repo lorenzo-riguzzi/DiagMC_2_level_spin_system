@@ -1,5 +1,6 @@
 from typing import Optional
 import math
+import random
 class Diagram():
     
     """ This class implements the Feynman diagram of a single spin 1/2 particle. 
@@ -209,3 +210,23 @@ class Diagram():
                 self.vertices.remove(tau_f)
             else:
                 return
+
+class Diagram_Random(Diagram):
+    
+    """Child class of the Diagram class, which implements random methods to perform the Monte Carlo simulation
+    
+        Attributes:
+        Same as the Diagram class,
+        random_generator: random number generator used to perform the Monte Carlo simulation (sets the seed for the class instance)
+    """
+    
+    def ___init__(self, 
+                beta: float,
+                s_0: int = -1,
+                vertices: Optional[list[float]] = None,
+                Gamma: float = 0,
+                h: float = 0,
+                seed_number: Optional[int] = None
+                ):
+        super().__init__(beta, s_0, vertices, Gamma, h)
+        self.random_generator = random.Random(seed_number)
