@@ -175,10 +175,6 @@ def test_try_add_segment():
 
 def test_try_remove_segment():
     """Tests that the try_remove_segment method correctly updates the diagram"""
-    diagram = Diagram(beta = 5.0, s_0= -1, h=0.5, Gamma=1.0)
-    
-    diagram.try_remove_segment(0.000005, remove_index=0) 
-    assert diagram.vertices == [] #Ensures that the vertices are not updated since the diagram has no vertices
     
     diagram = Diagram(beta = 5.0, s_0= 1, vertices = [1.0, 3.0, 4.0, 2.0, 4.5, 4.7], h=0.5, Gamma=1.0)
     
@@ -237,5 +233,22 @@ def test_random_try_add_segment():
     
     diagram1.random_try_add_segment()
     diagram2.random_try_add_segment()
+    
+    assert pytest.approx(diagram1.vertices) == diagram2.vertices
+
+def test_random_try_remove_segment():
+    """Check that nothing happens if we start with a diagram with no vertices"""
+    
+    diagram = Diagram_Random(beta = 5.0, s_0= -1, h=0.5, Gamma=1.0, seed_number=42)
+    
+    diagram.random_try_remove_segment() 
+    assert diagram.vertices == []
+    
+    """Asserts that the random_try_remove_segment method is deterministic once the seed is fixed """
+    diagram1 = Diagram_Random(beta=2.0, s_0=-1, vertices = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],  h=1.0, Gamma = 0.5, seed_number=42)
+    diagram2 = Diagram_Random(beta=2.0, s_0=-1, vertices = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],  h=1.0, Gamma = 0.5, seed_number=42)
+    
+    diagram1.random_try_remove_segment()
+    diagram2.random_try_remove_segment()
     
     assert pytest.approx(diagram1.vertices) == diagram2.vertices

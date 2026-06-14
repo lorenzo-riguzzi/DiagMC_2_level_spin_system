@@ -148,6 +148,8 @@ class Diagram():
             random_number: random number between 0 and 1 used to decide whether to accept or reject the addition of the segment
             tau_i: beginning of the new added segment
             tau_f: end of the new added segment
+            tau_after_f: position of the vertex located after tau_f
+            index: index of tau_after_f, which correspond to the one of tau_i once it's inserted
         """
         
         if random_number < 0 or random_number > 1:
@@ -185,29 +187,26 @@ class Diagram():
             remove_index: index of the first vertex to remove
         """
         
-        if self.number_vertices == 0:
-            return
+        if random_number < 0 or random_number > 1:
+            raise ValueError(f"Random number must be between 0 and 1. Current value is {random_number}.")
+            
+        if remove_index < 0 or remove_index >= self.number_vertices - 1:
+            raise ValueError(f"remove_index must be a valid index for the diagram.")
+            
+        tau_i = self.vertices[remove_index]
+        tau_f = self.vertices[remove_index + 1]
+        tau_after_f = self.vertices[remove_index + 2] if remove_index + 2 < self.number_vertices else self.beta
+        segment_spin = self.s_0 * (-1)**(remove_index + 1)
+            
+        alpha_remove = self.acceptance_rate_remove_segment(tau_i, tau_f, tau_after_f, segment_spin)
+            
+        if random_number < alpha_remove:
+            self.sum_with_alternating_sign -= (-1)**(remove_index + 1) * tau_i + (-1)**(remove_index + 2) * tau_f
+            self.number_vertices -= 2
+            self.vertices.remove(tau_i)
+            self.vertices.remove(tau_f)
         else:
-            if random_number < 0 or random_number > 1:
-                raise ValueError(f"Random number must be between 0 and 1. Current value is {random_number}.")
-            
-            if remove_index < 0 or remove_index >= self.number_vertices - 1:
-                raise ValueError(f"remove_index must be a valid index for the diagram.")
-            
-            tau_i = self.vertices[remove_index]
-            tau_f = self.vertices[remove_index + 1]
-            tau_after_f = self.vertices[remove_index + 2] if remove_index + 2 < self.number_vertices else self.beta
-            segment_spin = self.s_0 * (-1)**(remove_index + 1)
-            
-            alpha_remove = self.acceptance_rate_remove_segment(tau_i, tau_f, tau_after_f, segment_spin)
-            
-            if random_number < alpha_remove:
-                self.sum_with_alternating_sign -= (-1)**(remove_index + 1) * tau_i + (-1)**(remove_index + 2) * tau_f
-                self.number_vertices -= 2
-                self.vertices.remove(tau_i)
-                self.vertices.remove(tau_f)
-            else:
-                return
+            return
 
 class Diagram_Random(Diagram):
     
@@ -250,3 +249,16 @@ class Diagram_Random(Diagram):
         
         random_number = self.random_generator.uniform(0, 1)
         self.try_add_segment(random_number, tau_f, tau_i, tau_after_f, index)
+    
+    def random_try_remove_segment(self) -> None:
+        """ Try to remove a segment from the diagram, by comparing a random number with the acceptance rate of removing a segment.
+            Only needs parameters that come from the class and generate the random number inside the method.
+        """
+        
+        if self.number_vertices == 0:
+            return
+        else:
+            removed_index = self.random_generator.randint(0, self.number_vertices - 2) # The -2 is needed since otherwise we would have to remove beta to remove a segment 
+            random_number = self.random_generator.uniform(0, 1)
+            
+            self.try_remove_segment(random_number, removed_index)
