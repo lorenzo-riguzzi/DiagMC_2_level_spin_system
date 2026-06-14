@@ -41,7 +41,7 @@ class Diagram():
         self.h = h
         
         #evaluate the sum with alternating sign of the vertices, needed for the evaluation of m_z
-        self.sum_with_alternating_sign = sum((-1)**(i+1) * v for i, v in enumerate(self.vertices)) #the +1 is needed because the sum starts from 1
+        self.sum_with_alternating_sign = sum((-1)**(i+1) * vertex for i, vertex in enumerate(self.vertices)) #the +1 is needed because the sum starts from 1
         self.number_vertices = len(self.vertices) #Number of vertices of the diagram
     
     def evaluate_mz_of_diagram(self) -> float:

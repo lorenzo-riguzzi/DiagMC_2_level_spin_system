@@ -237,7 +237,7 @@ def test_random_try_add_segment():
     assert pytest.approx(diagram1.vertices) == diagram2.vertices
 
 def test_random_try_remove_segment():
-    """Check that nothing happens if we start with a diagram with no vertices"""
+    """Checks that nothing happens if we start with a diagram with no vertices"""
     
     diagram = Diagram_Random(beta = 5.0, s_0= -1, h=0.5, Gamma=1.0, seed_number=42)
     
