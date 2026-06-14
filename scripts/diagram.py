@@ -220,7 +220,7 @@ class Diagram_Random(Diagram):
         random_generator: random number generator used to perform the Monte Carlo simulation (sets the seed for the class instance)
     """
     
-    def ___init__(self, 
+    def __init__(self, 
                 beta: float,
                 s_0: int = -1,
                 vertices: Optional[list[float]] = None,
@@ -230,3 +230,10 @@ class Diagram_Random(Diagram):
                 ):
         super().__init__(beta, s_0, vertices, Gamma, h)
         self.random_generator = random.Random(seed_number)
+    
+    def random_try_spin_flip(self) -> None:
+        """ Try to flip the spin of the diagram, by comparing a random number with the acceptance rate of the flip.
+            Only needs parameters that come from the class and generate the random number inside the method.
+        """
+        random_number = self.random_generator.uniform(0, 1)
+        self.try_flip_spin(random_number)

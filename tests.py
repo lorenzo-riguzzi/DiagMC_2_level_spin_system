@@ -1,5 +1,5 @@
 import pytest
-from scripts.diagram import Diagram
+from scripts.diagram import Diagram, Diagram_Random
 
 """Tests for the Diagram class"""
 
@@ -208,3 +208,16 @@ def test_try_remove_segment():
     assert pytest.approx(diagram.sum_with_alternating_sign) == 1.0 #Ensures that the sum with alternating sign is correctly updated
     
     assert diagram.number_vertices == 2 #Ensures that the number of vertices is correctly updated
+
+
+""" Tests for the Diagram_Random class """
+
+def test_random_try_spin_flip():
+    """Asserts that the random_try_spin_flip method is deterministic once the seed is fixed """
+    diagram1 = Diagram_Random(beta=2.0, s_0=-1, h=1.0, Gamma = 0.5, seed_number=42)
+    diagram2 = Diagram_Random(beta=2.0, s_0=-1, h=1.0, Gamma = 0.5, seed_number=42)
+    
+    diagram1.random_try_spin_flip()
+    diagram2.random_try_spin_flip()
+    
+    assert diagram1.s_0 == diagram2.s_0
