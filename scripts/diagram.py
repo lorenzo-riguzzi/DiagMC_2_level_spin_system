@@ -237,3 +237,15 @@ class Diagram_Random(Diagram):
         """
         random_number = self.random_generator.uniform(0, 1)
         self.try_flip_spin(random_number)
+    
+    def random_try_add_segment(self) -> None:
+        """ Try to add a segment to the diagram, by comparing a random number with the acceptance rate of adding a segment.
+            Only needs parameters that come from the class and generate the random number inside the method.
+        """
+        tau_i = self.random_generator.uniform(0, self.beta)
+        
+        tau_after_f = next((tau for tau in self.vertices if tau > tau_i), self.beta)
+        tau_f = self.random_generator.uniform(tau_i, tau_after_f)
+        
+        random_number = self.random_generator.uniform(0, 1)
+        self.try_add_segment(random_number, tau_f, tau_i)

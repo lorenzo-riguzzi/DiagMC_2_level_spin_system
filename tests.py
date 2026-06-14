@@ -221,3 +221,13 @@ def test_random_try_spin_flip():
     diagram2.random_try_spin_flip()
     
     assert diagram1.s_0 == diagram2.s_0
+
+def test_random_try_add_segment():
+    """Asserts that the random_try_add_segment method is deterministic once the seed is fixed """
+    diagram1 = Diagram_Random(beta=2.0, s_0=-1, h=1.0, Gamma = 0.5, seed_number=42)
+    diagram2 = Diagram_Random(beta=2.0, s_0=-1, h=1.0, Gamma = 0.5, seed_number=42)
+    
+    diagram1.random_try_add_segment()
+    diagram2.random_try_add_segment()
+    
+    assert pytest.approx(diagram1.vertices) == diagram2.vertices
