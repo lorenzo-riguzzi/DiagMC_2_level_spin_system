@@ -76,7 +76,7 @@ class Diagram():
             m_x = - self.Gamma * math.tanh(self.beta * E) / E
             return m_x
     
-    def evaluate_mz_of_diagram(self) -> float:
+    def evaluate_m_z_of_diagram(self) -> float:
         """ Evaluate the magnetization along the z axis of the diagram.
             
             PARAMETERS (taken from the class):
@@ -294,3 +294,16 @@ class Diagram_Random(Diagram):
             random_number = self.random_generator.uniform(0, 1)
             
             self.try_remove_segment(random_number, removed_index)
+    
+    def chose_update(self) -> None:
+        """ Try to perform a random update of the diagram, by randomly choosing between the three possible updates (flip, add segment, remove segment).
+            Only needs parameters that come from the class and generate the random number inside the method.
+        """
+        extracted_number = self.random_generator.uniform(0, 1)
+        
+        if extracted_number < 1/3:
+            self.random_try_spin_flip()
+        elif extracted_number < 2/3:
+            self.random_try_add_segment()
+        else:
+            self.random_try_remove_segment()

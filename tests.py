@@ -78,16 +78,16 @@ def test_analytical_m_x():
 def test_m_z_calculation():
     """Tests the estimator for the magnetization along the z axis of a diagram"""
     diagram = Diagram(beta = 1.0, s_0=1)
-    assert diagram.evaluate_mz_of_diagram() == 1.0
+    assert diagram.evaluate_m_z_of_diagram() == 1.0
     
     diagram = Diagram(beta = 1.0, s_0=-1)
-    assert diagram.evaluate_mz_of_diagram() == -1.0
+    assert diagram.evaluate_m_z_of_diagram() == -1.0
     
     diagram = Diagram(beta = 5.0, s_0=1, vertices=[1.0, 2.0, 3.0, 3.5]) #tested with an already sorted list
-    assert pytest.approx(diagram.evaluate_mz_of_diagram()) == 0.4
+    assert pytest.approx(diagram.evaluate_m_z_of_diagram()) == 0.4
     
     diagram = Diagram(beta = 5.0, s_0=-1, vertices=[3.0, 1.0, 3.5, 2.0]) #tested with an unsorted list   
-    assert pytest.approx(diagram.evaluate_mz_of_diagram()) == -0.4
+    assert pytest.approx(diagram.evaluate_m_z_of_diagram()) == -0.4
 
 def test_m_x_calculation():
     """Tests the estimator for the magnetization along the x axis of a diagram"""
