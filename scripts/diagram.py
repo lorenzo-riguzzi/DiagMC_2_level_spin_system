@@ -44,6 +44,38 @@ class Diagram():
         self.sum_with_alternating_sign = sum((-1)**(i+1) * vertex for i, vertex in enumerate(self.vertices)) #the +1 is needed because the sum starts from 1
         self.number_vertices = len(self.vertices) #Number of vertices of the diagram
     
+    def analytical_m_z(self) -> float: 
+        """ Evaluate the magnetization along the z axis of the diagram using the analytical formula.
+            
+            PARAMETERS (taken from the class):
+            beta: inverse temperature
+            h: field along the z direction
+            Gamma: field along the x direction
+        """
+        if self.h == 0.0 and self.Gamma == 0.0:
+            m_z = 0.0
+            return m_z
+        else:
+            E = math.sqrt(self.h**2 + self.Gamma**2)
+            m_z = - self.h * math.tanh(self.beta * E) / E
+            return m_z
+    
+    def analytical_m_x(self) -> float:
+        """ Evaluate the magnetization along the x axis of the diagram using the analytical formula.
+            
+            PARAMETERS (taken from the class):
+            beta: inverse temperature
+            h: field along the z direction
+            Gamma: field along the x direction
+        """
+        if self.Gamma == 0.0 and self.h == 0.0:
+            m_x = 0.0
+            return m_x
+        else:
+            E = math.sqrt(self.h**2 + self.Gamma**2)
+            m_x = - self.Gamma * math.tanh(self.beta * E) / E
+            return m_x
+    
     def evaluate_mz_of_diagram(self) -> float:
         """ Evaluate the magnetization along the z axis of the diagram.
             

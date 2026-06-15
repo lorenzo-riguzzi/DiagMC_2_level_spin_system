@@ -47,6 +47,34 @@ def test_vertices_sorting():
     diagram = Diagram(beta=1.0, vertices=[0.5, 0.2, 0.8, 0.3])
     assert pytest.approx(diagram.vertices) == [0.2, 0.3, 0.5, 0.8]
 
+def test_analytical_m_z():
+    """Tests that the analytical value for the magnetization along the z axis is correctly calculated for a diagram with no vertices, which is the only case in which we can calculate it analytically"""
+    diagram = Diagram(beta = 2.0)
+    assert diagram.analytical_m_z() == 0
+    
+    diagram = Diagram(beta = 2.0, h = 0.6)
+    assert pytest.approx(diagram.analytical_m_z()) == -0.833654607012
+    
+    diagram = Diagram(beta = 2.0, h = 0.6, Gamma = 0.8)
+    assert pytest.approx(diagram.analytical_m_z()) == -0.578416548045
+    
+    diagram = Diagram(beta = 2.0, h = -0.6, Gamma = 0.8)
+    assert pytest.approx(diagram.analytical_m_z()) == 0.578416548045
+
+def test_analytical_m_x():
+    """Tests that the analytical value for the magnetization along the x axis is correctly calculated for a diagram with no vertices, which is the only case in which we can calculate it analytically"""
+    diagram = Diagram(beta = 2.0)
+    assert diagram.analytical_m_x() == 0
+    
+    diagram = Diagram(beta = 2.0, Gamma = 0.6)
+    assert pytest.approx(diagram.analytical_m_x()) == -0.833654607012
+    
+    diagram = Diagram(beta = 2.0, h = 0.8, Gamma = 0.6)
+    assert pytest.approx(diagram.analytical_m_x()) == -0.578416548045
+    
+    diagram = Diagram(beta = 2.0, h = 0.8, Gamma = -0.6)
+    assert pytest.approx(diagram.analytical_m_x()) == 0.578416548045
+
 def test_m_z_calculation():
     """Tests the estimator for the magnetization along the z axis of a diagram"""
     diagram = Diagram(beta = 1.0, s_0=1)
