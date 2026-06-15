@@ -111,7 +111,7 @@ class Diagram():
             sum_with_alternating_sign: sum of the vertices with alternating sign
         """
         
-        weight_ratio = math.exp(2*self.h*self.s_0*(self.beta+2*self.sum_with_alternating_sign)) 
+        weight_ratio = math.exp(2*self.h*self.s_0*(self.beta-2*self.sum_with_alternating_sign)) 
         alpha_flip = min(1, weight_ratio)
         return alpha_flip
     

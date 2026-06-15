@@ -48,7 +48,7 @@ $$ m_x = \braket{\sigma_x} = -\frac{\Gamma}{E}\tanh{\beta E} $$
 
 Diagrammatic Monte Carlo approaches the problem starting from the Path Integral formulation of the partition function in imaginary time:
 
-$$  Z=\sum_{s=\uparrow,\downarrow}\sum_{n=0}^\infty (-1)^n\int_{0}^{\beta}d\tau_1 ... \int_{\tau_{n-1}}^{\beta} \bra{s}e^{-\beta\hat{H}_0}\hat{H}_1(\tau_1)...\hat{H_1}(\tau_n)\ket{s} $$
+$$  Z=\sum_{s=\uparrow,\downarrow}\sum_{n=0}^\infty (-1)^n\int_{0}^{\beta}d\tau_1 ... \int_{\tau_{n-1}}^{\beta} \bra{s}e^{-\beta\hat{H}_0}\hat{H}_1(\tau_n)...\hat{H_1}(\tau_1)\ket{s} $$
 
 where, for the order $n=0$ we have no interaction Hamiltonian inside the expectation value and $\tau=it$ is the imaginary time, which is such that: $0< \tau_1 < \tau_2 < ... < \tau_n < \beta$. The interaction Hamiltonian is in the interaction representation:
 
@@ -56,7 +56,7 @@ $$ \hat{H}_1(\tau_k) = e^{\hat{H}_0\tau_k}\hat{H}_1 e^{-\hat{H}_0\tau_k} $$
 
 The arguments of the integral give the weight of a diagram of order $n$ with initial spin $s$ and vertices $\tau_1, ...\tau_n$. It can be proved that odd order diagrams have weight zero, while for even order diagrams the weight can be evaluated to be:
 
-$$ D_n^s=\Gamma^ne^{-\beta hs} \prod_{i=1}^n e^{-2hs(-1)^i\tau_i} $$
+$$ D_n^s=\Gamma^ne^{-\beta hs} \prod_{i=1}^n e^{2hs(-1)^i\tau_i} $$
 
 ### DMC updates
 
@@ -69,7 +69,7 @@ where $p(f|i)$ is the proposal distribution from which we chose the update to go
 
 - **Spin flip**: The update simply flips the spin of all the segments of the diagram and is already the opposite of itself. No random number has to extracted to find the final configuration since we only have to options, which means that we do not have a proposal distribution. The acceptance race is:
 
-$$ \alpha_{flip}=\min\left(1,\quad \frac{D_{n}^{-s}(\tau_1, ..., \tau_n)}{D_{n}^{s}(\tau_1, ..., \tau_n)}\right)=\min\left(1, \quad e^{2\beta hs}e^{4hs\sum_{i=1}^n (-1)^i\tau_i}\right) $$
+$$ \alpha_{flip}=\min\left(1,\quad \frac{D_{n}^{-s}(\tau_1, ..., \tau_n)}{D_{n}^{s}(\tau_1, ..., \tau_n)}\right)=\min\left(1, \quad e^{2\beta hs}e^{-4hs\sum_{i=1}^n (-1)^i\tau_i}\right) $$
 
 - **Add segment**: The update adds two vertices at indices $j$ and $j+1$. The first vertex to be added is extracted from a uniform distribution between 0 and $\beta$ and the second one from a uniform distribution between $\tau_j$ and $\tau_{j+2}$, which means that $p(f|i)=U(0, \beta)U(\tau_j, \tau_{j+2})=1/\beta\cdot 1/(\tau_{j+2}-\tau_j)$. For the opposite process, instead, the first vertex to be removed is extracted uniformly from the $n+2$ vertices present in the final configuration (except for the last vertex since we can not remove $\beta$ from the diagram) and when the first is chosen the second one is constrained to be the next one, so that here the ratio between the proposal distributions is: $p(i|f)=1/(n+1)$. Putting everything together we get:
 
@@ -77,7 +77,7 @@ $$ \alpha_{add}=\min\left(1,\quad \frac{D_{n+2}^{s}(\tau_1, ...,\tau_j, \tau_{j+
 
 - **Remove segment**: This update is the exact opposite of the previous one. In this case, when we chose the first vertex to be removed, we are extracting among the $n-1$ vertices of the diagram that can be removed, so that the acceptance rate in this case will be:
 
-$$ \alpha_{rem}=\min\left(1,\quad \frac{D_{n-2}^{s}(\tau_1, ..., \tau_{n})}{D_{n-2}^{s}(\tau_1, ...,\tau_j, \tau_{j+1}, ...,  \tau_n)}\frac{p(i|f)}{p(f|i)}\right)=\min\left(1, \quad \Gamma^{-2}e^{-2hs(-1)^j(\tau_{j+1}-\tau_j)}\frac{n-1}{\beta(\tau_{j+2}-\tau_j)}\right) $$
+$$ \alpha_{rem}=\min\left(1,\quad \frac{D_{n-2}^{s}(\tau_1, ..., \tau_{n})}{D_{n-2}^{s}(\tau_1, ...,\tau_j, \tau_{j+1}, ...,  \tau_n)}\frac{p(i|f)}{p(f|i)}\right)=\min\left(1, \quad \Gamma^{-2}e^{2hs(-1)^j(\tau_{j+1}-\tau_j)}\frac{n-1}{\beta(\tau_{j+2}-\tau_j)}\right) $$
 
 ### Estimators for the magnetizations
 
