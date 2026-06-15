@@ -52,13 +52,13 @@ where $p(f|i)$ is the proposal distribution from which we chose the update to go
 
 $$ \alpha_{flip}=\min\left(1,\quad \frac{D_{n}^{-s}(\tau_1, ..., \tau_n)}{D_{n}^{s}(\tau_1, ..., \tau_n)}\right)=\min\left(1, \quad e^{2\beta hs}e^{4hs\sum_{i=1}^n (-1)^i\tau_i}\right) $$
 
-- **Add segment**: The update adds two vertices at indices $j$ and $j+1$. The first vertex to be added is extracted from a uniform distribution between 0 and $\beta$ and the second one from a uniform distribution between $\tau_j$ and $\tau_{j+2}$, which means that $p(f|i)=U(0, \beta)U(\tau_j, \tau_{j+2})=1/\beta\cdot 1/(\tau_{j+2}-\tau_j). For the opposite process, instead, the first vertex to be removed is extracted uniformly from the $n+2$ vertices present in the final configuration (except for the last vertex since we can not remove $\beta$ from the diagram) and when the first is chosen the second one is constrained to be the next one, so that here the ratio between the proposal distributions is: $p(i|f)=1/(n+1)$. Putting everything together we get:
+- **Add segment**: The update adds two vertices at indices $j$ and $j+1$. The first vertex to be added is extracted from a uniform distribution between 0 and $\beta$ and the second one from a uniform distribution between $\tau_j$ and $\tau_{j+2}$, which means that $p(f|i)=U(0, \beta)U(\tau_j, \tau_{j+2})=1/\beta\cdot 1/(\tau_{j+2}-\tau_j)$. For the opposite process, instead, the first vertex to be removed is extracted uniformly from the $n+2$ vertices present in the final configuration (except for the last vertex since we can not remove $\beta$ from the diagram) and when the first is chosen the second one is constrained to be the next one, so that here the ratio between the proposal distributions is: $p(i|f)=1/(n+1)$. Putting everything together we get:
 
-$$ \alpha_{add}=\min\left(1,\quad \frac{D_{n+2}^{s}(\tau_1, ...,\tau_j, \tau_{j+1}, ...,  \tau_{n})}{D_{n}^{s}(\tau_1, ..., \tau_n)\frac{p(i|f)}{p(f|i)}}\right)=\min\left(1, \quad \Gamma^2e^{-2hs(-1)^j(\tau_{j+1}-\tau_j)}\frac{\beta(\tau_{j+2}-\tau_j)}{n+1}\right) $$
+$$ \alpha_{add}=\min\left(1,\quad \frac{D_{n+2}^{s}(\tau_1, ...,\tau_j, \tau_{j+1}, ...,  \tau_{n})}{D_{n}^{s}(\tau_1, ..., \tau_n)}\frac{p(i|f)}{p(f|i)}\right)=\min\left(1, \quad \Gamma^2e^{-2hs(-1)^j(\tau_{j+1}-\tau_j)}\frac{\beta(\tau_{j+2}-\tau_j)}{n+1}\right) $$
 
 - **Remove segment**: This update is the exact opposite of the previous one. In this case, when we chose the first vertex to be removed, we are extracting among the $n-1$ vertices of the diagram that can be removed, so that the acceptance rate in this case will be:
 
-$$ \alpha_{rem}=\min\left(1,\quad \frac{D_{n-2}^{s}(\tau_1, ..., \tau_{n})}{D_{n-2}^{s}(\tau_1, ...,\tau_j, \tau_{j+1}, ...,  \tau_n)\frac{p(i|f)}{p(f|i)}}\right)=\min\left(1, \quad \Gamma^{-2}e^{-2hs(-1)^j(\tau_{j+1}-\tau_j)}\frac{n-1}{\beta(\tau_{j+2}-\tau_j)}\right) $$
+$$ \alpha_{rem}=\min\left(1,\quad \frac{D_{n-2}^{s}(\tau_1, ..., \tau_{n})}{D_{n-2}^{s}(\tau_1, ...,\tau_j, \tau_{j+1}, ...,  \tau_n)}\frac{p(i|f)}{p(f|i)}\right)=\min\left(1, \quad \Gamma^{-2}e^{-2hs(-1)^j(\tau_{j+1}-\tau_j)}\frac{n-1}{\beta(\tau_{j+2}-\tau_j)}\right) $$
 
 ### Estimators for the magnetizations
 
@@ -66,6 +66,6 @@ During the simulation we will keep track of the transverse and the longitudinal 
 
 $$ m_z=\frac{s}{\beta}\left(\beta-2\sum_{i=1}^n(-1)^i\tau_i\right) $$
 
-$$ m_x=\frac{n}{\Gamma\beta} $$
+$$ m_x=-\frac{n}{\Gamma\beta} $$
 
-so that the DMC estimators are just the average values of these two quantities during the whole simulation: $\braket{\sigma_z}_{MC}=\braket{m_z}$ and $\braket{\sigma_z}_{MC}=-\braket{n}/\Gamma\beta$.
+so that the DMC estimators are just the average values of these two quantities during the whole simulation: $ \braket{\sigma_z}_{MC}=\braket{m_z} $ and $ \braket{\sigma_z}_{MC}=-\braket{n}/\Gamma\beta $.
