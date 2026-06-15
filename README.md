@@ -68,4 +68,4 @@ $$ m_z=\frac{s}{\beta}\left(\beta-2\sum_{i=1}^n(-1)^i\tau_i\right) $$
 
 $$ m_x=-\frac{n}{\Gamma\beta} $$
 
-so that the DMC estimators are just the average values of these two quantities during the whole simulation $\braket{\sigma_z}_{MC}=\braket{m_z}$ and $\braket{\sigma_x}_{MC}=-\braket{n}/\Gamma\beta$.
+so that the DMC estimators are just the average values of these two quantities during the whole simulation: $\langle\sigma_z\rangle _{MC}=\langle m_z \rangle$ and $\langle \sigma_x \rangle _{MC}=-\langle n\rangle/\Gamma\beta$.
