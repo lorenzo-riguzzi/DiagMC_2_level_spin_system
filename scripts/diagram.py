@@ -66,7 +66,7 @@ class Diagram():
             m_x = 0.0
             return m_x
         else:
-            m_x = self.number_vertices / (self.Gamma * self.beta)
+            m_x = - self.number_vertices / (self.Gamma * self.beta)
             return m_x
     
     def acceptance_rate_flip(self) -> float:
