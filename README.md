@@ -3,9 +3,28 @@ This program implements a Diagrammatic Monte Carlo (DMC) simulation of a two lev
 
 ## Installation and tests
 
-Type errors are checked with mypy
+TypeErrors are checked with mypy
+
+## Structure of the code
+
+### diagram.py
+
+This file includes the **Diagram** class and the **Diagram_Random** class. The first one implements all the deterministic methods of the code. These include:
+
+- The methods $evaluate\_m\_x$ and $evaluate\_m\_z$, which calculates the magnetizations of a single diagram;
+- The methods $acceptance\_rate\_flip$, $acceptance\_rate\_add\_segment$ and $acceptance\_rate\_remove\_segment$, which calculate the acceptance ratii $\alpha_{flip}$, $\alpha_{add}$ and $\alpha_{rem}$;
+- The methods $try\_flip\_spin$, $try\_add\_segment$ and $try\_remove\_segment$, which compare the acceptance ratii with a random number (that is here given as input parameter to the method) and apply the corresponding update if the random number is lower than the acceptance ratio.
+
+The second class, inherits all the methods of the first one and introduces randomness by including the Mersenne Twister random number generator, allowing its functions $random\_try\_flip\_spin$, $random\_try\_add\_segment$ and $random\_try\_remove\_segment$ to randomly performs the three updates by using the previously described functions of the parent class.
 
 ## Theoretical background
+
+Diagrammatic Monte Carlo is a powerful method which allows one to evaluate integrals which appear in the form of the diagrammatic series:
+
+$$ Q(\{y\})=\sum_{n=0}^{\infty}\sum_{\xsi_n}\int dx_1...\int dx_n D_n^{\xsi_n}(\{y\}; x_1, ..., x_n) $$
+
+We are interested in obtaining the function $Q$ which is a function of a set of external variables $\{y\}$ (usually, this is a Green's function). $D_{n}^{\xsi}(\{y\}; x_1, ..., x_n)$ represents the Feynmann diagrams of different order $n$ and of different topology $\xsi_n$ and $x_i$ are the integration variables (in our case they will be imaginary time points).
+In this simulation the method is used to study the simple problem of a two level spin system.
 
 ### Analytical solution
 
@@ -41,7 +60,7 @@ $$ D_n^s=\Gamma^ne^{-\beta hs} \prod_{i=1}^n e^{-2hs(-1)^i\tau_i} $$
 
 ### DMC updates
 
-The results obtained for odd and even order diagrams already tell us that the only update we are interested in are those where the order of the diagram is kept odd, so those that start from an odd order diagram and add or remove an odd number of vertices or that keep the order of the diagram fixed (spin flip or movement of a vertex). Since in a Monte Carlo simulation we aim at performing many runs to explore ergodically the space of all possible configurations, all the possible updates be reduced to the addition and the remotion of a pair of vertices. Always under the hypothesis of many runs and ergodicity all the possible updates which include the addition and remotion of vertices and the movement of a vertex without changing the order of the diagram can be constructed in terms of two minimal updates: the addition and the remotion of a segment (where for segment we mean a pair of vertices of extrema $\tau_k$ and $\tau_{k+1}$). The only update we need apart from these two si the spin flip update, which allows us to move from a configuration with $s=1$ ($s=\uparrow$), to a configuration with $s=-1$ ($s=\downarrow$). With our notation this last update corresponds to $s\rightarrow -s$. Notice that the presence of both the updates to add and remove a segment satisfies detailed balance, since they are one the inverse process of the other.
+The results obtained for odd and even order diagrams already tell us that the only updates we are interested in are those where the order of the diagram is kept odd, so those that start from an odd order diagram and add or remove an odd number of vertices or that keep the order of the diagram fixed (spin flip or movement of a vertex). Since in a Monte Carlo simulation we aim at performing many runs to explore ergodically the space of all possible configurations, all the possible updates be reduced to the addition and the remotion of a pair of vertices. Always under the hypothesis of many runs and ergodicity all the possible updates which include the addition and remotion of vertices and the movement of a vertex without changing the order of the diagram can be constructed in terms of two minimal updates: the addition and the remotion of a segment (where for segment we mean a pair of vertices of extrema $\tau_k$ and $\tau_{k+1}$). The only update we need apart from these two si the spin flip update, which allows us to move from a configuration with $s=1$ ($s=\uparrow$), to a configuration with $s=-1$ ($s=\downarrow$). With our notation this last update corresponds to $s\rightarrow -s$. Notice that the presence of both the updates to add and remove a segment satisfies detailed balance, since they are one the inverse process of the other.
 We want to implement a Markov-chain, where the different updates from an initial state $i$ to a final state $f$ are accepted with a probability that, from Metropolis-Hastings algorithm, is given by:
 
 $$  \alpha = \min\left(1, \quad \frac{D_{n_f}^{s_f}(\{\tau\}_f)}{D_{n_i}^{s_i}(\{\tau\}_i)}\frac{p(i|f)}{p(f|i)}\right) $$
