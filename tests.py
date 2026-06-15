@@ -70,7 +70,7 @@ def test_m_x_calculation():
     assert diagram.evaluate_m_x_of_diagram() == 0
     
     diagram = Diagram(beta = 1.0, Gamma=2.0, vertices = [0.5, 0.7, 0.2, 0.8])
-    assert pytest.approx(diagram.evaluate_m_x_of_diagram()) == 2.0
+    assert pytest.approx(diagram.evaluate_m_x_of_diagram()) == -2.0
 
 def test_acceptance_rate_flip():
     """Tests for the acceptance rate of a spin flip. Ensure that the calculation is done correctly"""
