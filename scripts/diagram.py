@@ -31,7 +31,7 @@ class Diagram():
         
         self.beta = beta
         self.s_0 = s_0
-        if vertices is None:
+        if vertices is None or len(vertices) == 0:
             self.vertices = []
         else:
             if max(list(vertices)) >= beta or min(list(vertices)) <= 0:

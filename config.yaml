@@ -1,13 +1,14 @@
 #Diagram parameters
-"diagram_param": 
+"diagram_params": 
         "beta": 5.0
         "s_0": -1
         "vertices": []
         "h": 0.5
+        "Gamma": 1.0
         "seed_number": 42
 
 #Simulation parameters
-"simulation_param": 
+"simulation_params": 
     "N_thermalization": 5000 #Number of thermalization steps
     "N_runs": 100000 #Number of Monte Carlo runs
 

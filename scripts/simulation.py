@@ -1,4 +1,4 @@
-from diagram import Diagram_Random
+from scripts.diagram import Diagram_Random
 import time
 
 def single_run(config: dict) -> None:
@@ -24,7 +24,7 @@ def single_run(config: dict) -> None:
     N_thermalization = simulation_params["N_thermalization"]
     N_runs = simulation_params["N_runs"]
     
-    print(f"Ignoring the first {N_thermalization} runs to thermalize the system...")
+    print("\n" + f"Ignoring the first {N_thermalization} runs to thermalize the system...")
     
     start_time = time.perf_counter()
     
@@ -32,31 +32,31 @@ def single_run(config: dict) -> None:
         diagram.chose_update() 
     
     thermalization_time = time.perf_counter() - start_time
-    print(f"Thermalization completed in {thermalization_time:.2f} seconds.")
+    print("\n" + f"Thermalization completed in {thermalization_time:.2f} seconds.")
     
     sum_m_z = 0
     sum_m_x = 0
     
-    print(f"Running the Monte Carlo simulation for {N_runs} runs...")
+    print("\n" + f"Running the Monte Carlo simulation for {N_runs} runs...")
     
     for i in range(N_runs):
         diagram.chose_update()
         sum_m_z += diagram.evaluate_m_z_of_diagram()
         sum_m_x += diagram.evaluate_m_x_of_diagram()
     
-    simulation_time = time.perf_counter() - thermalization_time
+    simulation_time = time.perf_counter() - start_time
     
-    print(f"Simulation completed in {simulation_time:.2f} seconds.")
+    print("\n" + f"Simulation completed in {simulation_time:.2f} seconds.")
     
     average_m_z = sum_m_z / N_runs
     average_m_x = sum_m_x / N_runs
     
-    print("\n" + "="*50)
+    print("\n" + "="*59)
     print("        DIAGRAMMATIC MONTE CARLO: SINGLE RUN RESULTS")
-    print("="*50)
-    print(f"Observable |  MC Estimate  |  Analytical  |  Abs Error")
-    print("-"*50)
+    print("="*59)
+    print(f"Observable |  MC Estimate  |  Analytical  |  Abs Difference")
+    print("-"*59)
     print(f"   m_z     |  {average_m_z:11.5f}  |  {analytical_m_z:10.5f}  |  {abs(average_m_z - analytical_m_z):9.5f}")
     print(f"   m_x     |  {average_m_x:11.5f}  |  {analytical_m_x:10.5f}  |  {abs(average_m_x - analytical_m_x):9.5f}")
-    print("="*50 + "\n")
+    print("="*59 + "\n")
 
