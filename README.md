@@ -11,11 +11,12 @@ TypeErrors are checked with mypy
 
 This file includes the **Diagram** class and the **Diagram_Random** class. The first one implements all the deterministic methods of the code. These include:
 
-- The methods $evaluate\_m\_x$ and $evaluate\_m\_z$, which calculates the magnetizations of a single diagram;
-- The methods $acceptance\_rate\_flip$, $acceptance\_rate\_add\_segment$ and $acceptance\_rate\_remove\_segment$, which calculate the acceptance ratii $\alpha_{flip}$, $\alpha_{add}$ and $\alpha_{rem}$;
-- The methods $try\_flip\_spin$, $try\_add\_segment$ and $try\_remove\_segment$, which compare the acceptance ratii with a random number (that is here given as input parameter to the method) and apply the corresponding update if the random number is lower than the acceptance ratio.
+- The methods *analytical_m_x* and *analytical_m_z*, which calculates the values of the two magnetizations with the analytical formula (to compare with the values obtained with the Monte Carlo estimators);
+- The methods *evaluate_m_x* and *evaluate_m_z*, which calculates the magnetizations of a single diagram;
+- The methods *acceptance_rate_flip*, *acceptance_rate_add_segment* and *acceptance_rate_remove_segment*, which calculate the acceptance ratii $\alpha_{flip}$, $\alpha_{add}$ and $\alpha_{rem}$;
+- The methods *try_flip_spin*, *try_add_segment* and *try_remove_segment*, which compare the acceptance ratii with a random number (that is here given as input parameter to the method) and apply the corresponding update if the random number is lower than the acceptance ratio.
 
-The second class, inherits all the methods of the first one and introduces randomness by including the Mersenne Twister random number generator, allowing its functions $random\_try\_flip\_spin$, $random\_try\_add\_segment$ and $random\_try\_remove\_segment$ to randomly performs the three updates by using the previously described functions of the parent class.
+The second class, inherits all the methods of the first one and introduces randomness by including the Mersenne Twister random number generator, allowing its functions *random_try_flip_spin*, *random_try_add_segment* and *random_try_remove_segment* to randomly perform the three updates by using the previously described functions of the parent class and the *choose_update* method that randomly choses one of the three updates with equal probability 1/3.
 
 ## Theoretical background
 
