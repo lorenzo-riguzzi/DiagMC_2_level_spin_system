@@ -1,0 +1,32 @@
+{
+    "diagram_param": {
+        "beta": 5.0,
+        "s_0": -1,
+        "vertices": [],
+        "h": 0.5,
+        "seed_number": 42
+    },
+
+    "simulation_param": {
+        "N_thermalization": 5000,
+        "N_runs": 100000
+    },
+
+    "mode": "single_run",
+    "mode_options": {
+        "single_run": {},
+        "convergence_test": {
+            "N_start": 100,
+            "N_end": 1000000,
+            "N_step": 100
+        },
+        "sweep": {
+            "variable": "h",
+            "variable_start": -2.0,
+            "variable_end": 2.0,
+            "variable_step": 0.2,
+            "sweep_variable": "Gamma",
+            "sweep_variable_values": [0.0, 0.5, 1.0, 2.0]
+        }
+    }
+}
