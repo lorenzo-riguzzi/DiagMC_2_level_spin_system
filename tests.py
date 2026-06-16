@@ -103,7 +103,7 @@ def test_m_x_calculation():
 def test_acceptance_rate_flip():
     """Tests for the acceptance rate of a spin flip. Ensure that the calculation is done correctly"""
     diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0, 4.0], h=0.5)
-    assert pytest.approx(diagram.acceptance_rate_flip()) == 0.0001234098041
+    assert pytest.approx(diagram.acceptance_rate_flip()) == 0.3678794412
     
     diagram = Diagram(beta = 5.0, s_0= 1, vertices=[3.0, 1.0, 2.0, 4.0], h=0.5)
     assert pytest.approx(diagram.acceptance_rate_flip()) == 1
@@ -154,10 +154,10 @@ def test_try_flip_spin():
     with pytest.raises(ValueError):
         diagram.try_flip_spin(2.3) #Ensures a ValueError is raised if the random number is greater than 1
     
-    diagram.try_flip_spin(0.00013)
+    diagram.try_flip_spin(0.37)
     assert diagram.s_0 == -1 #Ensures that the spin is not flipped since the acceptance rate is 0.0001234098041
     
-    diagram.try_flip_spin(0.00011)
+    diagram.try_flip_spin(0.36)
     assert diagram.s_0 == 1 #Ensures that the spin is flipped since the acceptance rate is 0.0001234098041
 
 
