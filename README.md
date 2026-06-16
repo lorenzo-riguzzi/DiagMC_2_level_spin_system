@@ -21,9 +21,9 @@ The second class, inherits all the methods of the first one and introduces rando
 
 Diagrammatic Monte Carlo is a powerful method which allows one to evaluate integrals which appear in the form of the diagrammatic series:
 
-$$ Q(\{y\})=\sum_{n=0}^{\infty}\sum_{\xsi_n}\int dx_1...\int dx_n D_n^{\xsi_n}(\{y\}; x_1, ..., x_n) $$
+$$ Q(\{y\})=\sum_{n=0}^{\infty}\sum_{\xi_n}\int dx_1...\int dx_n D_n^{\xi_n}(\{y\}; x_1, ..., x_n) $$
 
-We are interested in obtaining the function $Q$ which is a function of a set of external variables $\{y\}$ (usually, this is a Green's function). $D_{n}^{\xsi}(\{y\}; x_1, ..., x_n)$ represents the Feynmann diagrams of different order $n$ and of different topology $\xsi_n$ and $x_i$ are the integration variables (in our case they will be imaginary time points).
+We are interested in obtaining the function $Q$ which is a function of a set of external variables $\{y\}$ (usually, this is a Green's function). $D_{n}^{\xi}(\{y\}; x_1, ..., x_n)$ represents the Feynmann diagrams of different order $n$ and of different topology $\xi_n$ and $x_i$ are the integration variables (in our case they will be imaginary time points).
 In this simulation the method is used to study the simple problem of a two level spin system.
 
 ### Analytical solution
