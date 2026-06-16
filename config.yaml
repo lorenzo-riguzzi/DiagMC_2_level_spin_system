@@ -1,3 +1,4 @@
+#Diagram parameters
 "diagram_param": 
         "beta": 5.0
         "s_0": -1
@@ -5,23 +6,25 @@
         "h": 0.5
         "seed_number": 42
 
+#Simulation parameters
 "simulation_param": 
-    "N_thermalization": 5000
-    "N_runs": 100000
+    "N_thermalization": 5000 #Number of thermalization steps
+    "N_runs": 100000 #Number of Monte Carlo runs
 
-"mode": "single_run"
+# Simulation modes. The options are: "single_run", "convergence_test", and "sweep". 
+"mode": "single_run" 
 "mode_options":
-    "single_run":
+    "single_run": # Performs one single run and compare the results with the analytical values. No input parameters needed
 
-    "convergence_test": 
-        "N_start": 100
-        "N_end": 1000000
-        "N_step": 100
+    "convergence_test": # Performs a convergence test MC estimator vs analytical magnetizations by varying the number of Monte Carlo runs
+        "N_start": 100 # Initial number of Monte Carlo runs
+        "N_end": 1000000 # Final number of Monte Carlo runs
+        "N_step": 100 # Step size for the number of Monte Carlo runs
 
-    "sweep": 
+    "sweep": # Performs a sweep of the magnetization as a function of a variable (h, Gamma or beta)
         "variable": "h"
         "variable_start": -2.0
         "variable_end": 2.0
         "variable_step": 0.2
-        "sweep_variable": "Gamma"
-        "sweep_variable_values": [0.0, 0.5, 1.0, 2.0]
+        "sweep_variable": "Gamma" # Allows to plot the magnetizations vs variable for different values of one of the other two parameters
+        "sweep_variable_values": [0.0, 0.5, 1.0, 2.0] # If you want one single graph just write one number here
