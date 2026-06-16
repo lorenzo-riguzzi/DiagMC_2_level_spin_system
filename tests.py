@@ -280,3 +280,26 @@ def test_random_try_remove_segment():
     diagram2.random_try_remove_segment()
     
     assert pytest.approx(diagram1.vertices) == diagram2.vertices
+
+def test_chose_update():
+    """Asserts that the chose_update method is deterministic once the seed is fixed """
+    diagram1 = Diagram_Random(beta=2.0, s_0=-1, h=1.0, Gamma = 0.5, seed_number=42)
+    diagram2 = Diagram_Random(beta=2.0, s_0=-1, h=1.0, Gamma = 0.5, seed_number=42)
+    
+    diagram1.chose_update()
+    diagram2.chose_update()
+    
+    assert diagram1.s_0 == diagram2.s_0
+    assert pytest.approx(diagram1.vertices) == diagram2.vertices
+    
+    diagram1.chose_update()
+    diagram2.chose_update()
+    
+    assert diagram1.s_0 == diagram2.s_0
+    assert pytest.approx(diagram1.vertices) == diagram2.vertices
+    
+    diagram1.chose_update()
+    diagram2.chose_update()
+    
+    assert diagram1.s_0 == diagram2.s_0
+    assert pytest.approx(diagram1.vertices) == diagram2.vertices
