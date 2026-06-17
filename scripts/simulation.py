@@ -34,8 +34,8 @@ def single_run(config: dict) -> None:
     thermalization_time = time.perf_counter() - start_time
     print("\n" + f"Thermalization completed in {thermalization_time:.2f} seconds.")
     
-    sum_m_z = 0
-    sum_m_x = 0
+    sum_m_z = 0.0
+    sum_m_x = 0.0
     
     print("\n" + f"Running the Monte Carlo simulation for {N_runs} runs...")
     
