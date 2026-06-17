@@ -1,7 +1,8 @@
-import sys
-import os
+import os,sys,inspect
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0,parent_dir) 
 
 import pytest
 from scripts.diagram import Diagram, Diagram_Random

@@ -24,6 +24,11 @@ def single_run(config: dict) -> None:
     N_thermalization = simulation_params["N_thermalization"]
     N_runs = simulation_params["N_runs"]
     
+    if N_thermalization < 0:
+        raise ValueError("N_thermalization must be a non-negative integer.")
+    if N_runs <= 0:
+        raise ValueError("N_runs must be a positive non-null integer.")
+    
     print("\n" + f"Ignoring the first {N_thermalization} runs to thermalize the system...")
     
     start_time = time.perf_counter()
