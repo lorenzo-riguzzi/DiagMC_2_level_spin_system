@@ -87,11 +87,11 @@ def convergence_test(config: dict) -> None:
     analytical_m_z = diagram.analytical_m_z()
     analytical_m_x = diagram.analytical_m_x()
     
-    if abs(analytical_m_z) < 1e-9: 
-        print("m_z is too small to define a relative error. The threshold will be automatically set to 0.01")
+    if abs(analytical_m_z) < 1e-7: 
+        print("m_z is too small to define a relative error. The threshold will be automatically set to 1e-6")
         
-    if abs(analytical_m_x) < 1e-9:
-        print("m_x is too small to define a relative error. The threshold will be automatically set to 0.01")
+    if abs(analytical_m_x) < 1e-7:
+        print("m_x is too small to define a relative error. The threshold will be automatically set to 1e-6")
 
     N_thermalization = simulation_params["N_thermalization"]
     
@@ -104,8 +104,8 @@ def convergence_test(config: dict) -> None:
     output_name_m_z = convergence_test_params["output_file_m_z"]
     output_name_m_x = convergence_test_params["output_file_m_x"]
     
-    threshold_m_z = 0.01 if abs(analytical_m_z) < 1e-9 else abs(analytical_m_z) * accuracy
-    threshold_m_x = 0.01 if abs(analytical_m_x) < 1e-9 else abs(analytical_m_x) * accuracy
+    threshold_m_z = 1e-6 if abs(analytical_m_z) < 1e-7 else abs(analytical_m_z) * accuracy
+    threshold_m_x = 1e-6 if abs(analytical_m_x) < 1e-7 else abs(analytical_m_x) * accuracy
 
     if N_thermalization < 0:
         raise ValueError("N_thermalization must be a non-negative integer.")
@@ -119,41 +119,41 @@ def convergence_test(config: dict) -> None:
     
     sum_m_z = 0.0
     sum_m_x = 0.0
+    performed_runs = 0
     
     for i in range(N_thermalization):
             diagram.chose_update()
     
-    for N in range(N_start, N_end + 1, N_step): 
+    for N in range(1, N_end + 1): 
         
-        steps_to_run = N_start if performed_runs == 0 else N_step
+        diagram.chose_update()
+        performed_runs += 1
         
-        for i in range(steps_to_run):
-            diagram.chose_update()
-            sum_m_z += diagram.evaluate_m_z_of_diagram()
-            sum_m_x += diagram.evaluate_m_x_of_diagram()
+        sum_m_z += diagram.evaluate_m_z_of_diagram()
+        sum_m_x += diagram.evaluate_m_x_of_diagram()
         
-        performed_runs += steps_to_run
+        if N == N_start or (N > N_start and N % N_step == 0):
         
-        average_m_z = sum_m_z / performed_runs
-        average_m_x = sum_m_x / performed_runs
-        
-        error_m_z = abs(average_m_z - analytical_m_z)
-        error_m_x = abs(average_m_x - analytical_m_x)
-        
-        data_row_m_z ={
-            "N": N,
-            "m_z": average_m_z,
-            "error": error_m_z
-        }
+            average_m_z = sum_m_z / performed_runs
+            average_m_x = sum_m_x / performed_runs
+            
+            error_m_z = abs(average_m_z - analytical_m_z)
+            error_m_x = abs(average_m_x - analytical_m_x)
+            
+            data_row_m_z ={
+                "N": N,
+                "m_z": average_m_z,
+                "error": error_m_z
+            }
 
-        data_row_m_x ={
-            "N": N,
-            "m_x": average_m_x,
-            "error": error_m_x
-        }
-        
-        data_m_z.append(data_row_m_z)
-        data_m_x.append(data_row_m_x)
+            data_row_m_x ={
+                "N": N,
+                "m_x": average_m_x,
+                "error": error_m_x
+            }
+            
+            data_m_z.append(data_row_m_z)
+            data_m_x.append(data_row_m_x)
     
     data_frame_m_z = pd.DataFrame(data_m_z)
     data_frame_m_x = pd.DataFrame(data_m_x)
@@ -166,4 +166,27 @@ def convergence_test(config: dict) -> None:
     output_file_m_x = os.path.join(output_dir, output_name_m_x) 
     data_frame_m_x.to_csv(output_file_m_x, index=False)
     
-    print("CONVERGENCE TEST PERFORMED SUCCESSFULLY!")
+    failed_convergence_m_z = data_frame_m_z[data_frame_m_z["error"] > threshold_m_z]
+    failed_convergence_m_x = data_frame_m_x[data_frame_m_x["error"] > threshold_m_x]
+    
+    if failed_convergence_m_z.empty:
+        print('\n' + f"m_z converged successfully within the threshold of {accuracy*100:.2f}%.")
+    else:
+        last_failed_index_m_z = failed_convergence_m_z.index[-1]
+        if last_failed_index_m_z == len(data_frame_m_z) - 1:
+            print('\n' + f"m_z did not converge within the threshold of {accuracy*100:.2f}% within {N_end} runs. Increase N_end or decrease the accuracy threshold.")
+        else:
+            convergence_point_m_z = data_frame_m_z.loc[last_failed_index_m_z + 1, "N"] 
+            print('\n' + f"m_z converged successfully within the threshold of {accuracy*100:.2f}% after {convergence_point_m_z} runs.")
+    
+    if failed_convergence_m_x.empty:
+        print('\n' + f"m_x converged successfully within the threshold of {accuracy*100:.2f}%.")
+    else:
+        last_failed_index_m_x = failed_convergence_m_x.index[-1]
+        if last_failed_index_m_x == len(data_frame_m_x) - 1:
+            print('\n' + f"m_x did not converge within the threshold of {accuracy*100:.2f}% within {N_end} runs. Increase N_end or decrease the accuracy threshold.")
+        else:
+            convergence_point_m_x = data_frame_m_x.loc[last_failed_index_m_x + 1, "N"] 
+            print('\n' + f"m_x converged successfully within the threshold of {accuracy*100:.2f}% after {convergence_point_m_x} runs.")
+
+    print('\n' + "CONVERGENCE TEST PERFORMED SUCCESSFULLY!")
