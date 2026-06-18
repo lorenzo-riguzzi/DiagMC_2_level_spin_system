@@ -21,7 +21,7 @@ def main():
     if mode == "single_run":
         scripts.simulation.single_run(config)
     elif mode == "convergence_test":
-        print("To be implemented yet")
+        scripts.simulation.convergence_test(config)
     elif mode == "sweep":
         print("To be implemented yet")
     else:

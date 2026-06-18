@@ -13,14 +13,17 @@
     "N_runs": 100000 #Number of Monte Carlo runs
 
 # Simulation modes. The options are: "single_run", "convergence_test", and "sweep". 
-"mode": "single_run" 
+"mode": "convergence_test" 
 "mode_options":
     "single_run": # Performs one single run and compare the results with the analytical values. No input parameters needed
 
     "convergence_test": # Performs a convergence test MC estimator vs analytical magnetizations by varying the number of Monte Carlo runs
-        "N_start": 100 # Initial number of Monte Carlo runs
-        "N_end": 1000000 # Final number of Monte Carlo runs
-        "N_step": 100 # Step size for the number of Monte Carlo runs
+        "N_start": 500 # Initial number of Monte Carlo runs
+        "N_end": 100000 # Final number of Monte Carlo runs
+        "N_step": 500 # Step size for the number of Monte Carlo runs
+        "accuracy": 0.01 # Percentage error for the values of the magnetizations.
+        "output_file_m_z": "convergence_test_results_m_z.csv" # Output file for the convergence test results
+        "output_file_m_x": "convergence_test_results_m_x.csv" # Output file for the convergence test results
 
     "sweep": # Performs a sweep of the magnetization as a function of a variable (h, Gamma or beta)
         "variable": "h"
