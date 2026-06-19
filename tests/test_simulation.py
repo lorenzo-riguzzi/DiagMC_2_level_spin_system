@@ -1,4 +1,5 @@
 import os,sys,inspect
+import pandas as pd
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -224,6 +225,35 @@ def test_convergence_test_input_parameters_value_errors():
     
     with pytest.raises(ValueError):
         convergence_test(wrong_config)
+
+def test_convergence_test_output_files_created():
+    """ Verifies that the .csv output files are created after running convergence_test with valid parameters """
+    
+    convergence_test(valid_config)
+    
+    output_path_z = os.path.join("results", "test_conv_z.csv")
+    output_path_x = os.path.join("results", "test_conv_x.csv")
+    
+    assert os.path.exists(output_path_z)
+    assert os.path.exists(output_path_x)
+    
+    dataframe_z = pd.read_csv(output_path_z)
+    
+    assert "N" in dataframe_z.columns
+    assert "m_z" in dataframe_z.columns
+    assert "error" in dataframe_z.columns
+    
+    dataframe_x = pd.read_csv(output_path_x)
+    
+    assert "N" in dataframe_x.columns
+    assert "m_x" in dataframe_x.columns
+    assert "error" in dataframe_x.columns
+    
+    if os.path.exists(output_path_z):
+        os.remove(output_path_z)
+    if os.path.exists(output_path_x):
+        os.remove(output_path_x)
+
 
 
 
