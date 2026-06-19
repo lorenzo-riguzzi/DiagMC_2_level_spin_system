@@ -44,6 +44,8 @@ def single_run(config: dict) -> None:
     sum_m_z = 0.0
     sum_m_x = 0.0
     
+    start_MC = time.perf_counter()
+    
     print("\n" + f"Running the Monte Carlo simulation for {N_runs} runs...")
     
     for i in range(N_runs):
@@ -51,7 +53,7 @@ def single_run(config: dict) -> None:
         sum_m_z += diagram.evaluate_m_z_of_diagram()
         sum_m_x += diagram.evaluate_m_x_of_diagram()
     
-    simulation_time = time.perf_counter() - start_time
+    simulation_time = time.perf_counter() - start_MC
     
     print("\n" + f"Simulation completed in {simulation_time:.2f} seconds.")
     
@@ -66,6 +68,7 @@ def single_run(config: dict) -> None:
     print(f"   m_z     |  {average_m_z:11.5f}  |  {analytical_m_z:10.5f}  |  {abs(average_m_z - analytical_m_z):9.5f}")
     print(f"   m_x     |  {average_m_x:11.5f}  |  {analytical_m_x:10.5f}  |  {abs(average_m_x - analytical_m_x):9.5f}")
     print("="*59 + "\n")
+
 
 def convergence_test(config: dict) -> None:
     """ Execute a convergence test for the Monte Carlo simulation and prints the results on terminal
@@ -111,6 +114,8 @@ def convergence_test(config: dict) -> None:
         raise ValueError("N_thermalization must be a non-negative integer.")
     if N_start <= 0 or N_end <= 0 or N_step <= 0:
         raise ValueError("N_start, N_end and N_step must be positive non-null integers.")
+    if N_start > N_end:
+        raise ValueError("N_start must be less than or equal to N_end.")
     
     data_m_z = []
     data_m_x = []
@@ -132,7 +137,7 @@ def convergence_test(config: dict) -> None:
         sum_m_z += diagram.evaluate_m_z_of_diagram()
         sum_m_x += diagram.evaluate_m_x_of_diagram()
         
-        if N == N_start or (N > N_start and N % N_step == 0):
+        if N == N_start or (N > N_start and (N - N_start) % N_step == 0):
         
             average_m_z = sum_m_z / performed_runs
             average_m_x = sum_m_x / performed_runs

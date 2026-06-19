@@ -219,3 +219,6 @@ __marimo__/
 
 #output data files
 *.dat
+
+#results of the simulation
+results/*
