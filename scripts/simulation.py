@@ -2,6 +2,7 @@ from scripts.diagram import Diagram_Random
 import time
 import pandas as pd
 import os
+import numpy as np
 
 def single_run(config: dict) -> None:
     """ Execute a single Monte Carlo run and prints the results on terminal
@@ -71,7 +72,7 @@ def single_run(config: dict) -> None:
 
 
 def convergence_test(config: dict) -> None:
-    """ Execute a convergence test for the Monte Carlo simulation and prints the results on terminal
+    """ Execute a convergence test for the Monte Carlo simulation and prints the results in .csv format
         Takes the parameters from the config.yaml file
     """
     
@@ -195,3 +196,71 @@ def convergence_test(config: dict) -> None:
             print('\n' + f"m_x converged successfully within the threshold of {accuracy*100:.2f}% after {convergence_point_m_x} runs.")
 
     print('\n' + "CONVERGENCE TEST PERFORMED SUCCESSFULLY!")
+
+def sweep(config: dict) -> None:
+    """ Performs the MC simulation for different values of the variable chosen in the config.yaml file (beta, Gamma, h).
+        Prints the results in .csv format.
+        Takes the input parameters from the config.yaml file
+    """
+    
+    diagram_params = config["diagram_params"]
+    simulation_params = config["simulation_params"]
+    
+    diagram = Diagram_Random(
+        beta = diagram_params["beta"], 
+        s_0 = diagram_params["s_0"],
+        vertices = diagram_params.get("vertices", []),
+        h = diagram_params["h"], 
+        Gamma = diagram_params["Gamma"], 
+        seed_number = diagram_params["seed_number"]
+    )
+    
+    N_thermalization = simulation_params["N_thermalization"]
+    N_runs = simulation_params["N_runs"]
+    
+    if N_thermalization < 0:
+        raise ValueError("N_thermalization must be a non-negative integer.")
+    if N_runs <= 0:
+        raise ValueError("N_runs must be a positive non-null integer.")
+    
+    sweep_params = config["mode_options"]["sweep"]
+    
+    sweep_variable = sweep_params["variable"]
+    sweep_start = sweep_params["variable_start"]
+    sweep_end = sweep_params["variable_end"]
+    sweep_step = sweep_params["variable_step"]
+    
+    if sweep_variable not in ["beta", "Gamma", "h"]:
+        raise ValueError("Invalid sweep variable. Must be one of 'beta', 'Gamma' or 'h'.")
+    if sweep_end <= sweep_start:
+        raise ValueError("sweep_end must be greater than sweep_start.")
+    if sweep_step <= 0:
+        raise ValueError("sweep_step must be a positive non-null number.")
+    
+    sweep_values = np.arange(sweep_start, sweep_end + sweep_step, sweep_step)
+    
+    results_m_z = []
+    results_m_x = []
+    
+    for value in sweep_values:
+        setattr(diagram, sweep_variable, value)
+        
+        analytical_m_z = diagram.analytical_m_z()
+        analytical_m_x = diagram.analytical_m_x()
+        
+        for i in range(N_thermalization):
+            diagram.chose_update()
+        
+        sum_m_z = 0.0
+        sum_m_x = 0.0
+        
+        for i in range(N_runs):
+            diagram.chose_update()
+            sum_m_z += diagram.evaluate_m_z_of_diagram()
+            sum_m_x += diagram.evaluate_m_x_of_diagram()
+        
+        average_m_z = sum_m_z / N_runs
+        average_m_x = sum_m_x / N_runs
+        
+        results_m_z.append((value, average_m_z, analytical_m_z))
+        results_m_x.append((value, average_m_x, analytical_m_x))
