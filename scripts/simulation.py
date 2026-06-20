@@ -127,6 +127,8 @@ def convergence_test(config: dict) -> None:
     sum_m_x = 0.0
     performed_runs = 0
     
+    start_time = time.perf_counter()
+    
     for i in range(N_thermalization):
             diagram.chose_update()
     
@@ -194,8 +196,10 @@ def convergence_test(config: dict) -> None:
         else:
             convergence_point_m_x = data_frame_m_x.loc[last_failed_index_m_x + 1, "N"] 
             print('\n' + f"m_x converged successfully within the threshold of {accuracy*100:.2f}% after {convergence_point_m_x} runs.")
+    
+    convergence_test_time = time.perf_counter() - start_time
 
-    print('\n' + "CONVERGENCE TEST PERFORMED SUCCESSFULLY!")
+    print('\n' + f"Convergence test performed successfully in {convergence_test_time:.2f} seconds!" + "\n")
 
 def sweep(config: dict) -> None:
     """ Performs the MC simulation for different values of the variable chosen in the config.yaml file (beta, Gamma, h).
@@ -205,15 +209,6 @@ def sweep(config: dict) -> None:
     
     diagram_params = config["diagram_params"]
     simulation_params = config["simulation_params"]
-    
-    diagram = Diagram_Random(
-        beta = diagram_params["beta"], 
-        s_0 = diagram_params["s_0"],
-        vertices = diagram_params.get("vertices", []),
-        h = diagram_params["h"], 
-        Gamma = diagram_params["Gamma"], 
-        seed_number = diagram_params["seed_number"]
-    )
     
     N_thermalization = simulation_params["N_thermalization"]
     N_runs = simulation_params["N_runs"]
@@ -229,6 +224,8 @@ def sweep(config: dict) -> None:
     sweep_start = sweep_params["variable_start"]
     sweep_end = sweep_params["variable_end"]
     sweep_step = sweep_params["variable_step"]
+    output_name_m_z = sweep_params["output_file_m_z"]
+    output_name_m_x = sweep_params["output_file_m_x"]
     
     if sweep_variable not in ["beta", "Gamma", "h"]:
         raise ValueError("Invalid sweep variable. Must be one of 'beta', 'Gamma' or 'h'.")
@@ -239,10 +236,22 @@ def sweep(config: dict) -> None:
     
     sweep_values = np.arange(sweep_start, sweep_end + sweep_step, sweep_step)
     
-    results_m_z = []
-    results_m_x = []
+    data_m_z = []
+    data_m_x = []
+    
+    start_time = time.perf_counter()
     
     for value in sweep_values:
+        
+        diagram = Diagram_Random(
+        beta = diagram_params["beta"], 
+        s_0 = diagram_params["s_0"],
+        vertices = diagram_params.get("vertices", []),
+        h = diagram_params["h"], 
+        Gamma = diagram_params["Gamma"], 
+        seed_number = diagram_params["seed_number"]
+        )
+        
         setattr(diagram, sweep_variable, value)
         
         analytical_m_z = diagram.analytical_m_z()
@@ -262,5 +271,57 @@ def sweep(config: dict) -> None:
         average_m_z = sum_m_z / N_runs
         average_m_x = sum_m_x / N_runs
         
-        results_m_z.append((value, average_m_z, analytical_m_z))
-        results_m_x.append((value, average_m_x, analytical_m_x))
+        """if sweep_variable == "h":
+            fixed_variable_1 = "beta"
+            fixed_variable_1_value = diagram.beta
+            fixed_variable_2 = "Gamma"
+            fixed_variable_2_value = diagram.Gamma
+        elif sweep_variable == "beta":
+            fixed_variable_1 = "h"
+            fixed_variable_1_value = diagram.h
+            fixed_variable_2 = "Gamma"
+            fixed_variable_2_value = diagram.Gamma
+        elif sweep_variable == "Gamma":
+            fixed_variable_1 = "beta"
+            fixed_variable_1_value = diagram.beta
+            fixed_variable_2 = "h"
+            fixed_variable_2_value = diagram.h"""
+        
+        fixed_params = {
+            param: getattr(diagram, param) for param in ["beta", "h", "Gamma"] if param != sweep_variable
+        }
+        
+        
+        data_row_m_z ={
+                sweep_variable: value,
+                "m_z (MC)": average_m_z,
+                "m_z (Analytical)": analytical_m_z,
+                **fixed_params
+            }
+        
+        data_row_m_x ={
+                sweep_variable: value,
+                "m_x (MC)": average_m_x,
+                "m_x (Analytical)": analytical_m_x,
+                **fixed_params
+            }
+        
+        data_m_z.append(data_row_m_z)
+        data_m_x.append(data_row_m_x)
+    
+    sweep_time = time.perf_counter() - start_time
+    
+    print("\n" + f"Sweep over the variable {sweep_variable} performed successfully in {sweep_time:.2f} seconds.")
+    
+    data_frame_m_z = pd.DataFrame(data_m_z)
+    data_frame_m_x = pd.DataFrame(data_m_x)
+    
+    output_dir = "results" 
+    os.makedirs(output_dir, exist_ok=True)    
+    
+    output_file_m_z = os.path.join(output_dir, output_name_m_z)
+    data_frame_m_z.to_csv(output_file_m_z, index=False)
+    output_file_m_x = os.path.join(output_dir, output_name_m_x) 
+    data_frame_m_x.to_csv(output_file_m_x, index=False)
+    
+    print("\n" + f"Sweep results saved successfully in '{output_dir}' directory as '{output_name_m_z}' and '{output_name_m_x}'" + "\n")

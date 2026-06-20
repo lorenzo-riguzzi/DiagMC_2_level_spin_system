@@ -23,7 +23,7 @@ def main():
     elif mode == "convergence_test":
         scripts.simulation.convergence_test(config)
     elif mode == "sweep":
-        print("To be implemented yet")
+        scripts.simulation.sweep(config)
     else:
         print(f"Error: Unknown simulation execution mode '{mode}' specified.")
         sys.exit(1)
