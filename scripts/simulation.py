@@ -271,22 +271,6 @@ def sweep(config: dict) -> None:
         average_m_z = sum_m_z / N_runs
         average_m_x = sum_m_x / N_runs
         
-        """if sweep_variable == "h":
-            fixed_variable_1 = "beta"
-            fixed_variable_1_value = diagram.beta
-            fixed_variable_2 = "Gamma"
-            fixed_variable_2_value = diagram.Gamma
-        elif sweep_variable == "beta":
-            fixed_variable_1 = "h"
-            fixed_variable_1_value = diagram.h
-            fixed_variable_2 = "Gamma"
-            fixed_variable_2_value = diagram.Gamma
-        elif sweep_variable == "Gamma":
-            fixed_variable_1 = "beta"
-            fixed_variable_1_value = diagram.beta
-            fixed_variable_2 = "h"
-            fixed_variable_2_value = diagram.h"""
-        
         fixed_params = {
             param: getattr(diagram, param) for param in ["beta", "h", "Gamma"] if param != sweep_variable
         }
