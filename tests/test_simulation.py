@@ -243,12 +243,14 @@ def test_convergence_test_output_files_created():
     assert "N" in dataframe_z.columns
     assert "m_z" in dataframe_z.columns
     assert "error" in dataframe_z.columns
+    assert "threshold" in dataframe_z.columns
     
     dataframe_x = pd.read_csv(output_path_x)
     
     assert "N" in dataframe_x.columns
     assert "m_x" in dataframe_x.columns
     assert "error" in dataframe_x.columns
+    assert "threshold" in dataframe_x.columns
     
     if os.path.exists(output_path_z):
         os.remove(output_path_z)

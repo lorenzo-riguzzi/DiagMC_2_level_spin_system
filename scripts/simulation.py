@@ -151,13 +151,15 @@ def convergence_test(config: dict) -> None:
             data_row_m_z ={
                 "N": N,
                 "m_z": average_m_z,
-                "error": error_m_z
+                "error": error_m_z,
+                "threshold": threshold_m_z
             }
 
             data_row_m_x ={
                 "N": N,
                 "m_x": average_m_x,
-                "error": error_m_x
+                "error": error_m_x,
+                "threshold": threshold_m_x
             }
             
             data_m_z.append(data_row_m_z)
