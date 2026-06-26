@@ -7,7 +7,7 @@ TypeErrors are checked with mypy
 
 ## Structure of the code
 
-### diagram.py
+### [diagram.py](scripts/diagram.py)
 
 This file includes the **Diagram** class and the **Diagram_Random** class. The first one implements all the deterministic methods of the code. These include:
 
@@ -17,6 +17,19 @@ This file includes the **Diagram** class and the **Diagram_Random** class. The f
 - The methods *try_flip_spin*, *try_add_segment* and *try_remove_segment*, which compare the acceptance ratii with a random number (that is here given as input parameter to the method) and apply the corresponding update if the random number is lower than the acceptance ratio.
 
 The second class, inherits all the methods of the first one and introduces randomness by including the Mersenne Twister random number generator, allowing its functions *random_try_flip_spin*, *random_try_add_segment* and *random_try_remove_segment* to randomly perform the three updates by using the previously described functions of the parent class and the *choose_update* method that randomly choses one of the three updates with equal probability 1/3.
+
+### [config.yaml](config.yaml)
+
+This is the input file of the code and is the only one that needs to be modified by the user. It is divided in three sections:
+
+- *diagram_params*, in which the user can specify the quantities that characterize the starting Feynman diagram (including the random seed used in the simulation);
+- *simulation_params*, where the user can specify the number *N_runs* of Monte Carlo runs to perform while collecting data and the number *N_thermalization* of thermalization runs to perform before actually starting collecting data. These are performed since the first results obtained might be biased by the chosen initial configuration of the diagram and thus influence negatively the statistics;
+- *mode*, which allows the user to chose between three possible simulations to perform: *single_run*, *convergence_test* and *sweep*. 
+
+For the first mode a single Monte Carlo simulation is performed using the diagram specified in *diagram_params*. The second one performs a convergence test by running several Monte Carlo simulations at different values of *N_runs*. To perform this kind of calculation the user needs to additionally specify the beginning and the ending values *N_start* and *N_ends* of *N_runs* and the step *N_step* that separate each used value of *N_runs*. Eventually the user needs to specify the accuracy threshold that he wants to achieve with the convergence test, expressed as percentage and the name of the output file. The accuracy threshold is the the percentage error accepted for the MC magnetization with respect to the analytical value. The last mode instead allows to chose a variable among those that define a diagram ($h$, $\Gamma$ and $\beta$) and perform a sweep for several values of that variable. Here the user needs to specify the variable over which the sweep will be performed, its starting value *variable_start* and its ending value *variable_end* together with the step *variable_step* that separates two consecutive values of the variable (pay ATTENTION on the fact that the $\beta$ variable, even during the sweep, can only be positive, while $h$ and $\Gamma$ do not have limitations on their possible values, so if $\beta$ is chosen to be the variable the sweeping range must be chosen in such a way that it does not include negative values).
+
+
+### [simulation.py](scripts/simulation.py)
 
 ## Theoretical background
 
