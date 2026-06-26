@@ -5,18 +5,11 @@ This program implements a Diagrammatic Monte Carlo (DMC) simulation of a two lev
 
 TypeErrors are checked with mypy
 
+## How to run the simulation
+
+## Example results
+
 ## Structure of the code
-
-### [diagram.py](scripts/diagram.py)
-
-This file includes the **Diagram** class and the **Diagram_Random** class. The first one implements all the deterministic methods of the code. These include:
-
-- The methods *analytical_m_x* and *analytical_m_z*, which calculates the values of the two magnetizations with the analytical formula (to compare with the values obtained with the Monte Carlo estimators);
-- The methods *evaluate_m_x* and *evaluate_m_z*, which calculates the magnetizations of a single diagram;
-- The methods *acceptance_rate_flip*, *acceptance_rate_add_segment* and *acceptance_rate_remove_segment*, which calculate the acceptance ratii $\alpha_{flip}$, $\alpha_{add}$ and $\alpha_{rem}$;
-- The methods *try_flip_spin*, *try_add_segment* and *try_remove_segment*, which compare the acceptance ratii with a random number (that is here given as input parameter to the method) and apply the corresponding update if the random number is lower than the acceptance ratio.
-
-The second class, inherits all the methods of the first one and introduces randomness by including the Mersenne Twister random number generator, allowing its functions *random_try_flip_spin*, *random_try_add_segment* and *random_try_remove_segment* to randomly perform the three updates by using the previously described functions of the parent class and the *choose_update* method that randomly choses one of the three updates with equal probability 1/3.
 
 ### [config.yaml](config.yaml)
 
@@ -28,8 +21,32 @@ This is the input file of the code and is the only one that needs to be modified
 
 For the first mode a single Monte Carlo simulation is performed using the diagram specified in *diagram_params*. The second one performs a convergence test by running several Monte Carlo simulations at different values of *N_runs*. To perform this kind of calculation the user needs to additionally specify the beginning and the ending values *N_start* and *N_ends* of *N_runs* and the step *N_step* that separate each used value of *N_runs*. Eventually the user needs to specify the accuracy threshold that he wants to achieve with the convergence test, expressed as percentage and the name of the output file. The accuracy threshold is the the percentage error accepted for the MC magnetization with respect to the analytical value. The last mode instead allows to chose a variable among those that define a diagram ($h$, $\Gamma$ and $\beta$) and perform a sweep for several values of that variable. Here the user needs to specify the variable over which the sweep will be performed, its starting value *variable_start* and its ending value *variable_end* together with the step *variable_step* that separates two consecutive values of the variable (pay ATTENTION on the fact that the $\beta$ variable, even during the sweep, can only be positive, while $h$ and $\Gamma$ do not have limitations on their possible values, so if $\beta$ is chosen to be the variable the sweeping range must be chosen in such a way that it does not include negative values).
 
+The user can also define his own alternative [config.yaml](config.yaml) file to use in the simulation, following the same structure of the furnished one. For calling a user defined configuration file named, for example, *alternative_config.yaml*, the user just need to specify it as an argument when calling the main function:
 
-### [simulation.py](scripts/simulation.py)
+
+### [main.py](main.py)
+
+This contains the main function of the code, which performs the required simulation following the instructions of the configuration file. It calls either the *single_run* function, the *convergence_test* function or the *sweep_function*. The user can run the required calculation by running:
+
+### [scripts/diagram.py](scripts/diagram.py)
+
+This file includes the **Diagram** class and the **Diagram_Random** class. The first one implements all the deterministic methods of the code. These include:
+
+- The methods *analytical_m_x* and *analytical_m_z*, which calculates the values of the two magnetizations with the analytical formula (to compare with the values obtained with the Monte Carlo estimators);
+- The methods *evaluate_m_x* and *evaluate_m_z*, which calculates the magnetizations of a single diagram;
+- The methods *acceptance_rate_flip*, *acceptance_rate_add_segment* and *acceptance_rate_remove_segment*, which calculate the acceptance ratii $\alpha_{flip}$, $\alpha_{add}$ and $\alpha_{rem}$;
+- The methods *try_flip_spin*, *try_add_segment* and *try_remove_segment*, which compare the acceptance ratii with a random number (that is here given as input parameter to the method) and apply the corresponding update if the random number is lower than the acceptance ratio.
+
+The second class, inherits all the methods of the first one and introduces randomness by including the Mersenne Twister random number generator, allowing its functions *random_try_flip_spin*, *random_try_add_segment* and *random_try_remove_segment* to randomly perform the three updates by using the previously described functions of the parent class and the *choose_update* method that randomly choses one of the three updates with equal probability 1/3.
+
+
+### [scripts/simulation.py](scripts/simulation.py)
+
+This file implements the three different simulation modes. All these functions take a *config* dictionary as input, which will be the one obtained from the configuration file. The three functions are the following ones:
+
+- *single_run*: This function creates a [diagram.py](Diagram_Random) object following the instructions of the configuration file and uses it to evaluate the analytical values of the magnetizations and those obtained with the MC estimators. Once it finishes it prints on terminal the time taken to per form the simulation and both the MC and the analytical values of the two magnetizations. It also prints the modulus of the difference between the MC estimated value and the analytical one.
+- *convergence_test*: This function allows to perform a convergence test simulation by performing an MC cycle and evaluating *m_x* and *m_z* every fixed number of steps. The aim of this function is finding the minimum value of $N$ among the proposed ones wuch that the required accuracy is reached. This value can then be used as an optimized value to use in subsequent simulations in order to maximize the efficiency and still obtain reliable results. At the end of the simulation the function creates a *.csv* file (whose name can always be specified in the configuration file) which contains as columns: the number of MC runs performed, the MC values of *m_z*, their absolute difference *error_m_z* with respect to the analytical one and the accuracy threshold *threshold_m_z*, which is a constant value obtained by multiplying the analytical value of *m_z* by the required accuracy in the configuration files. The rest of the columns contain the same quantities for *m_x*. After this the function analyses the obtained results and prints on screen the values of N after which the vales of the errors of *m_z* and *m_x* are always below the required accuracy threshold.
+- *sweep*: This function performs the simulation for several different diagrams (one for each required value of the sweeping variable in the configuration file). During its loop it evaluates, for each of these diagrams, the MC estimated and the analytical magnetizations and prints them in a *.csv* file whose name is always specified in the configuration file. The output also contains the values of the two other quantities over which the sweep is not done, since they will be later used when plotting the results.
 
 ## Theoretical background
 
