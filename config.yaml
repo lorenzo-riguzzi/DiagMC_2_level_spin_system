@@ -22,8 +22,7 @@
         "N_end": 100000 # Final number of Monte Carlo runs
         "N_step": 500 # Step size for the number of Monte Carlo runs
         "accuracy": 0.01 # Percentage error for the values of the magnetizations.
-        "output_file_m_z": "convergence_test_results_m_z.csv" # Output file for the convergence test results
-        "output_file_m_x": "convergence_test_results_m_x.csv" # Output file for the convergence test results
+        "output_file": "convergence_test_results.csv" # Output file for the convergence test results
 
     "sweep": # Performs a sweep of the magnetization as a function of a variable (h, Gamma or beta)
         "variable": "h" #variable over which the sweep is performed (only beta, h and Gamma are accepted)

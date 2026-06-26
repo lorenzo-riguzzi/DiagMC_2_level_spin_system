@@ -105,8 +105,7 @@ def convergence_test(config: dict) -> None:
     N_end = convergence_test_params["N_end"]
     N_step = convergence_test_params["N_step"]
     accuracy = convergence_test_params["accuracy"]
-    output_name_m_z = convergence_test_params["output_file_m_z"]
-    output_name_m_x = convergence_test_params["output_file_m_x"]
+    output_name = convergence_test_params["output_file"]
     
     threshold_m_z = 1e-6 if abs(analytical_m_z) < 1e-7 else abs(analytical_m_z) * accuracy
     threshold_m_x = 1e-6 if abs(analytical_m_x) < 1e-7 else abs(analytical_m_x) * accuracy
@@ -118,8 +117,7 @@ def convergence_test(config: dict) -> None:
     if N_start > N_end:
         raise ValueError("N_start must be less than or equal to N_end.")
     
-    data_m_z = []
-    data_m_x = []
+    data = []
     
     performed_runs = 0
     
@@ -148,55 +146,47 @@ def convergence_test(config: dict) -> None:
             error_m_z = abs(average_m_z - analytical_m_z)
             error_m_x = abs(average_m_x - analytical_m_x)
             
-            data_row_m_z ={
+            data_row={
                 "N": N,
                 "m_z": average_m_z,
-                "error": error_m_z,
-                "threshold": threshold_m_z
-            }
-
-            data_row_m_x ={
-                "N": N,
+                "error_m_z": error_m_z,
+                "threshold_m_z": threshold_m_z,
                 "m_x": average_m_x,
-                "error": error_m_x,
-                "threshold": threshold_m_x
+                "error_m_x": error_m_x,
+                "threshold_m_x": threshold_m_x
             }
             
-            data_m_z.append(data_row_m_z)
-            data_m_x.append(data_row_m_x)
+            data.append(data_row)
     
-    data_frame_m_z = pd.DataFrame(data_m_z)
-    data_frame_m_x = pd.DataFrame(data_m_x)
+    data_frame = pd.DataFrame(data)
     
     output_dir = "results" 
     os.makedirs(output_dir, exist_ok=True)    
     
-    output_file_m_z = os.path.join(output_dir, output_name_m_z)
-    data_frame_m_z.to_csv(output_file_m_z, index=False)
-    output_file_m_x = os.path.join(output_dir, output_name_m_x) 
-    data_frame_m_x.to_csv(output_file_m_x, index=False)
+    output_file = os.path.join(output_dir, output_name)
+    data_frame.to_csv(output_file, index=False)
     
-    failed_convergence_m_z = data_frame_m_z[data_frame_m_z["error"] > threshold_m_z]
-    failed_convergence_m_x = data_frame_m_x[data_frame_m_x["error"] > threshold_m_x]
+    failed_convergence_m_z = data_frame[data_frame["error_m_z"] > threshold_m_z]
+    failed_convergence_m_x = data_frame[data_frame["error_m_x"] > threshold_m_x]
     
     if failed_convergence_m_z.empty:
         print('\n' + f"m_z converged successfully within the threshold of {accuracy*100:.2f}%.")
     else:
         last_failed_index_m_z = failed_convergence_m_z.index[-1]
-        if last_failed_index_m_z == len(data_frame_m_z) - 1:
+        if last_failed_index_m_z == len(data_frame) - 1:
             print('\n' + f"m_z did not converge within the threshold of {accuracy*100:.2f}% within {N_end} runs. Increase N_end or decrease the accuracy threshold.")
         else:
-            convergence_point_m_z = data_frame_m_z.loc[last_failed_index_m_z + 1, "N"] 
+            convergence_point_m_z = data_frame.loc[last_failed_index_m_z + 1, "N"] 
             print('\n' + f"m_z converged successfully within the threshold of {accuracy*100:.2f}% after {convergence_point_m_z} runs.")
     
     if failed_convergence_m_x.empty:
         print('\n' + f"m_x converged successfully within the threshold of {accuracy*100:.2f}%.")
     else:
         last_failed_index_m_x = failed_convergence_m_x.index[-1]
-        if last_failed_index_m_x == len(data_frame_m_x) - 1:
+        if last_failed_index_m_x == len(data_frame) - 1:
             print('\n' + f"m_x did not converge within the threshold of {accuracy*100:.2f}% within {N_end} runs. Increase N_end or decrease the accuracy threshold.")
         else:
-            convergence_point_m_x = data_frame_m_x.loc[last_failed_index_m_x + 1, "N"] 
+            convergence_point_m_x = data_frame.loc[last_failed_index_m_x + 1, "N"] 
             print('\n' + f"m_x converged successfully within the threshold of {accuracy*100:.2f}% after {convergence_point_m_x} runs.")
     
     convergence_test_time = time.perf_counter() - start_time

@@ -190,8 +190,7 @@ valid_config_convergence = {
             "N_end": 30,
             "N_step": 10,
             "accuracy": 0.05,
-            "output_file_m_z": "test_conv_z.csv",
-            "output_file_m_x": "test_conv_x.csv"
+            "output_file": "test_conv.csv",
         }
     }
 }
@@ -204,8 +203,7 @@ def test_convergence_test_input_parameters_value_errors():
             "N_end": 30,
             "N_step": 10,
             "accuracy": 0.05,
-            "output_file_m_z": "test_conv_z.csv",
-            "output_file_m_x": "test_conv_x.csv"
+            "output_file": "test_conv.csv"
         }
     }
     
@@ -219,8 +217,7 @@ def test_convergence_test_input_parameters_value_errors():
             "N_end": 30,
             "N_step": 10,
             "accuracy": 0.05,
-            "output_file_m_z": "test_conv_z.csv",
-            "output_file_m_x": "test_conv_x.csv"
+            "output_file": "test_conv.csv"
         }
     }
     
@@ -232,31 +229,23 @@ def test_convergence_test_output_files_created():
     
     convergence_test(valid_config_convergence)
     
-    output_path_z = os.path.join("results", "test_conv_z.csv")
-    output_path_x = os.path.join("results", "test_conv_x.csv")
+    output_path = os.path.join("results", "test_conv.csv")
     
-    assert os.path.exists(output_path_z)
-    assert os.path.exists(output_path_x)
+    assert os.path.exists(output_path)
     
-    dataframe_z = pd.read_csv(output_path_z)
+    dataframe = pd.read_csv(output_path)
     
-    assert "N" in dataframe_z.columns
-    assert "m_z" in dataframe_z.columns
-    assert "error" in dataframe_z.columns
-    assert "threshold" in dataframe_z.columns
+    assert "N" in dataframe.columns
+    assert "m_z" in dataframe.columns
+    assert "error_m_z" in dataframe.columns
+    assert "threshold_m_z" in dataframe.columns
+    assert "m_x" in dataframe.columns
+    assert "error_m_x" in dataframe.columns
+    assert "threshold_m_x" in dataframe.columns
     
-    dataframe_x = pd.read_csv(output_path_x)
     
-    assert "N" in dataframe_x.columns
-    assert "m_x" in dataframe_x.columns
-    assert "error" in dataframe_x.columns
-    assert "threshold" in dataframe_x.columns
-    
-    if os.path.exists(output_path_z):
-        os.remove(output_path_z)
-    if os.path.exists(output_path_x):
-        os.remove(output_path_x)
-
+    if os.path.exists(output_path):
+        os.remove(output_path)
 
 valid_config_sweep = {
     "diagram_params": {
