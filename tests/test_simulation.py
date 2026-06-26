@@ -2,7 +2,10 @@ import os,sys,inspect
 import pandas as pd
 import copy
 
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+frame = inspect.currentframe()
+assert frame is not None
+
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(frame)))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0,parent_dir) 
 
