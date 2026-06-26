@@ -261,8 +261,7 @@ valid_config_sweep = {
             "variable_start": 0.1,
             "variable_end": 2.0,
             "variable_step": 0.1,
-            "output_file_m_z": "test_sweep_z.csv",
-            "output_file_m_x": "test_sweep_x.csv"
+            "output_file": "test_sweep.csv"
         }
     }
 }
@@ -315,33 +314,22 @@ def test_sweep_output_files_created():
     
     variable = valid_config_sweep["mode_options"]["sweep"]["variable"]
     
-    output_path_z = os.path.join("results", "test_sweep_z.csv")
-    output_path_x = os.path.join("results", "test_sweep_x.csv")
+    output_path = os.path.join("results", "test_sweep.csv")
     
-    assert os.path.exists(output_path_z)
-    assert os.path.exists(output_path_x)
+    assert os.path.exists(output_path)
     
-    dataframe_z = pd.read_csv(output_path_z)
+    dataframe = pd.read_csv(output_path)
     
-    assert variable in dataframe_z.columns
-    assert "m_z (MC)" in dataframe_z.columns
-    assert "m_z (Analytical)" in dataframe_z.columns
-    assert "h" in dataframe_z.columns
-    assert "Gamma" in dataframe_z.columns
-    assert len(dataframe_z) == 20
+    assert variable in dataframe.columns
+    assert "m_z (MC)" in dataframe.columns
+    assert "m_z (Analytical)" in dataframe.columns
+    assert "m_x (MC)" in dataframe.columns
+    assert "m_x (Analytical)" in dataframe.columns
+    assert "h" in dataframe.columns
+    assert "Gamma" in dataframe.columns
+    assert len(dataframe) == 20
     
-    dataframe_x = pd.read_csv(output_path_x)
-    
-    assert variable in dataframe_x.columns
-    assert "m_x (MC)" in dataframe_x.columns
-    assert "m_x (Analytical)" in dataframe_x.columns
-    assert "h" in dataframe_x.columns
-    assert "Gamma" in dataframe_x.columns
-    assert len(dataframe_x) == 20
-    
-    if os.path.exists(output_path_z):
-        os.remove(output_path_z)
-    if os.path.exists(output_path_x):
-        os.remove(output_path_x)
+    if os.path.exists(output_path):
+        os.remove(output_path)
 
 

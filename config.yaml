@@ -13,7 +13,7 @@
     "N_runs": 100000 #Number of Monte Carlo runs
 
 # Simulation modes. The options are: "single_run", "convergence_test", and "sweep". 
-"mode": "convergence_test" #Chose the simulation mode among "mode_options"
+"mode": "sweep" #Chose the simulation mode among "mode_options"
 "mode_options":
     "single_run": # Performs one single run and compare the results with the analytical values. No input parameters needed
 
@@ -29,5 +29,4 @@
         "variable_start": -2.0
         "variable_end": 2.0
         "variable_step": 0.2
-        "output_file_m_z": "sweep_results_m_z.csv" # Output file for the sweep results
-        "output_file_m_x": "sweep_results_m_x.csv" # Output file for the sweep results
+        "output_file": "sweep_results.csv" # Output file for the sweep results

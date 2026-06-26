@@ -216,8 +216,7 @@ def sweep(config: dict) -> None:
     sweep_start = sweep_params["variable_start"]
     sweep_end = sweep_params["variable_end"]
     sweep_step = sweep_params["variable_step"]
-    output_name_m_z = sweep_params["output_file_m_z"]
-    output_name_m_x = sweep_params["output_file_m_x"]
+    output_name = sweep_params["output_file"]
     
     if sweep_variable not in ["beta", "Gamma", "h"]:
         raise ValueError("Invalid sweep variable. Must be one of 'beta', 'Gamma' or 'h'.")
@@ -228,8 +227,7 @@ def sweep(config: dict) -> None:
     
     sweep_values = np.arange(sweep_start, sweep_end + sweep_step, sweep_step)
     
-    data_m_z = []
-    data_m_x = []
+    data = []
     
     start_time = time.perf_counter()
     
@@ -268,36 +266,27 @@ def sweep(config: dict) -> None:
         }
         
         
-        data_row_m_z ={
+        data_row ={
                 sweep_variable: value,
                 "m_z (MC)": average_m_z,
                 "m_z (Analytical)": analytical_m_z,
-                **fixed_params
-            }
-        
-        data_row_m_x ={
-                sweep_variable: value,
                 "m_x (MC)": average_m_x,
                 "m_x (Analytical)": analytical_m_x,
                 **fixed_params
             }
         
-        data_m_z.append(data_row_m_z)
-        data_m_x.append(data_row_m_x)
+        data.append(data_row)
     
     sweep_time = time.perf_counter() - start_time
     
     print("\n" + f"Sweep over the variable {sweep_variable} performed successfully in {sweep_time:.2f} seconds.")
     
-    data_frame_m_z = pd.DataFrame(data_m_z)
-    data_frame_m_x = pd.DataFrame(data_m_x)
+    data_frame = pd.DataFrame(data)
     
     output_dir = "results" 
     os.makedirs(output_dir, exist_ok=True)    
     
-    output_file_m_z = os.path.join(output_dir, output_name_m_z)
-    data_frame_m_z.to_csv(output_file_m_z, index=False)
-    output_file_m_x = os.path.join(output_dir, output_name_m_x) 
-    data_frame_m_x.to_csv(output_file_m_x, index=False)
+    output_file = os.path.join(output_dir, output_name)
+    data_frame.to_csv(output_file, index=False)
     
-    print("\n" + f"Sweep results saved successfully in '{output_dir}' directory as '{output_name_m_z}' and '{output_name_m_x}'" + "\n")
+    print("\n" + f"Sweep results saved successfully in '{output_dir}' directory as '{output_name}'" + "\n")
