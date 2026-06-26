@@ -1,9 +1,27 @@
 # DiagMC_2_level_spin_system
-This program implements a Diagrammatic Monte Carlo (DMC) simulation of a two level spin system exploiting Markov Chain Monte Carlo and the Metropolis-Hastings algorithm. DMC is used to sample the Feynman diagrams of different orders that appear in the partition function of the system. The simulation aims at obtaining estimators for the magnetization along the longitudinal and transverse direction and at comparing them with their exact analytical expressions. This work aims at proving the validity of the method in order to justify its usage for more complex problems, which do not have an analytical solution.
+This program implements a Diagrammatic Monte Carlo (DMC) simulation of a two level spin system exploiting [Markov Chain Monte Carlo](https://pubs.aip.org/aip/jcp/article/21/6/1087/202680/Equation-of-State-Calculations-by-Fast-Computing) and the [Metropolis-Hastings algorithm](https://academic.oup.com/biomet/article/57/1/97/284580). DMC is used to sample the Feynman diagrams of different orders that appear in the partition function of the system. The simulation aims at obtaining estimators for the magnetization along the longitudinal and transverse direction and at comparing them with their exact analytical expressions. This work aims at proving the validity of the method in order to justify its usage for more complex problems, which do not have an analytical solution.
 
 ## Installation and tests
 
-TypeErrors are checked with mypy
+To clone the repository on your local machine type:
+
+```bash
+$ git clone https://github.com/lorenzo-riguzzi/DiagMC_2_level_spin_system.git
+$ cd DiagMC_2_level_spin_system
+```
+
+TypeErrors are checked with [mypy](https://mypy.readthedocs.io/en/stable/). To verify that no TypeError is present in the code run:
+
+```bash
+$ python3 -m mypy . --explicit-package-bases --ignore-missing-imports
+```
+
+The files that perform unit testing are contained in the [tests](tests) folder and are [test_diagram.py](tests/test_diagram.py) and [test_simulation.py](tests/test_simulation.py). These contain the tests relative to the function in the [diagram.py](scripts/diagram.py) file and [simulation.py](scripts/simulation.py) file respectively. Tests are performed using [pytest](https://happytest.readthedocs.io/en/latest/contents/). To ensure that all the test are passed run:
+
+```bash
+$ python3 -m pytest
+```
+
 
 ## How to run the simulation
 
