@@ -10,7 +10,7 @@
 #Simulation parameters
 "simulation_params": 
     "N_thermalization": 5000 #Number of thermalization steps
-    "N_runs": 100000 #Number of Monte Carlo runs
+    "N_runs": 500000 #Number of Monte Carlo runs
 
 # Simulation modes. The options are: "single_run", "convergence_test", and "sweep". 
 "mode": "sweep" #Chose the simulation mode among "mode_options"
@@ -28,5 +28,5 @@
         "variable": "h" #variable over which the sweep is performed (only beta, h and Gamma are accepted)
         "variable_start": -2.0
         "variable_end": 2.0
-        "variable_step": 0.2
+        "variable_step": 0.05
         "output_file": "sweep_results.csv" # Output file for the sweep results
