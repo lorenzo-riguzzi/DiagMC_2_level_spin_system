@@ -33,7 +33,80 @@ $ python3 main.py config.yaml
 
 where instead of *config.yaml* the user can specify his own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling the [main.py](main.py) function.
 
+If the user performs a *convergence_test* or a *sweep* calculation the results are printed in a *.csv* file. These results can be visualized graphically using the scripts in the [plots](plots) folder. To visualize the results of the magnetizations as a function of the number of MC runs of a convergence test calculation run:
+
+```bash
+$ python3 plots/plot_convergence.py convergence_output_name.csv
+```
+
+where *convergence_output_name* is the name of the output that one wants to plot, that must be specified in the [config.yaml](config.yaml).
+For the results of a sweep calculation, instead, run:
+
+```bash
+$ python3 plots/plot_sweep.py sweep_output_name.csv
+```
+
+where the name of the output is always to be specified in the [config.yaml](config.yaml).
+
 ## Example results
+
+### single_run
+
+A *single_run* calculation produces as output a single value of *m_x* and *m_z* and prints them on terminal. The results are shown in the form of a table containing the MC values, the analytical values and their absolute difference. Also the number of MC steps, the number of thermalization steps and the duration of the simulation are printed on screen:
+
+```bash
+
+Ignoring the first 5000 runs to thermalize the system...
+
+Thermalization completed in 0.01 seconds.
+
+Running the Monte Carlo simulation for 1000000 runs...
+
+Simulation completed in 3.01 seconds.
+
+===========================================================
+        DIAGRAMMATIC MONTE CARLO: SINGLE RUN RESULTS
+===========================================================
+Observable |  MC Estimate  |  Analytical  |  Abs Difference
+-----------------------------------------------------------
+   m_z     |     -0.50994  |    -0.51148  |    0.00154
+   m_x     |     -0.85358  |    -0.85247  |    0.00111
+===========================================================
+
+```
+
+### convergence_test
+
+The results of a convergence test are printed in *.csv* format. An example of such results is shown in the [examples](examples) folder, with the file: [convergence_test_results.csv](examples/convergence_test_results.csv). The calculation also prints on terminal after which number of MC runs the required accuracy is reached for the two magnetizations. All these results can be visualized in an easier way by plotting the results using the [plot_convergence.py](plots/plot_convergence.py) script in the plots folder. Examples of such results are contained in the [examples](examples) folder and are [convergence_test_results_m_x.png](examples/convergence_test_results_m_x.png) and [convergence_test_results_m_z.png](examples/convergence_test_results_m_z.png):
+
+<p align="center">
+  <img src="examples/convergence_test_results_m_x.png" width="500">
+  <img src="examples/convergence_test_results_m_z.png" width="500">
+</p>
+
+here the red area contains the points that are below the required convergence threshold. Convergence is considered to be reached if all the points after a certain *N_runs* are inside the red area.
+
+### sweep
+
+The results of the sweep mode are printed in a *.csv* file. In the [examples](examples) folder one can find an example for each possible variable of the magnetizations ($h$, $\Gamma$, $\beta$). These are the files [sweep_h.csv](examples/sweep_h.csv), [sweep_Gamma.csv](examples/sweep_Gamma.csv) and [sweep_beta.csv](examples/sweep_beta.csv). These contain the MC and analytical results of the two magnetizations, together also with the variable kept fixed during the simulation (which are used by the plotting script to insert them in the titles of the plots). These results were obtained with *N_runs = 500000* for the sweeps over $h$ and $\Gamma$ and for *N_runs = 1000000* for the sweep over $\beta$, which required a higher number of MC runs to reach a good agreement with the analytical values for high $\beta$. The [examples](examples) folder also contains the plots [sweep_h_m_x.png](examples/sweep_h_m_x.png), [sweep_h_m_z.png](examples/sweep_h_m_z.png), [sweep_Gamma_m_x.png](examples/sweep_Gamma_m_x.png), [sweep_Gamma_m_z.png](examples/sweep_Gamma_m_z.png), [sweep_beta_m_x.png](examples/sweep_beta_m_x.png) and [sweep_beta_m_z.png](examples/sweep_beta_m_z.png):
+
+<p align="center">
+  <img src="examples/sweep_h_m_x.png" width="500">
+  <img src="examples/sweep_h_m_z.png" width="500">
+</p>
+
+<p align="center">
+  <img src="examples/sweep_Gamma_m_x.png" width="500">
+  <img src="examples/sweep_Gamma_m_z.png" width="500">
+</p>
+
+<p align="center">
+  <img src="examples/sweep_beta_m_x.png" width="500">
+  <img src="examples/sweep_beta_m_z.png" width="500">
+</p>
+
+
+
 
 ## Structure of the code
 

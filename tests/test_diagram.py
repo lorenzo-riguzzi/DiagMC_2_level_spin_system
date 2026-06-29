@@ -193,8 +193,8 @@ def test_try_add_segment():
     
     assert diagram.number_vertices == 6 #Ensures that the number of vertices is correctly updated
     
-    #check how the method works when the segment is added at the end of the list
-    #Ensures that, finding tau_after_f and index in the same way in which they are found int he random method random_try_add_segment, they are chosen correctly to be beta and number_vertices 
+    """check how the method works when the segment is added at the end of the list
+    Ensures that, finding tau_after_f and index in the same way in which they are found int he random method random_try_add_segment, they are chosen correctly to be beta and number_vertices """
     
     tau_i = 4.2
     tau_f = 4.8
@@ -238,7 +238,7 @@ def test_try_remove_segment():
     
     assert diagram.number_vertices == 4 #Ensures that the number of vertices is correctly updated
     
-    #We ensure that, if we remove the last possible segment, tau_after_f = beta
+    """We ensure that, if we remove the last possible segment, tau_after_f = beta """
     
     diagram.try_remove_segment(0.99, remove_index=2)
     assert pytest.approx(diagram.vertices) == [1.0, 2.0, 4.5, 4.7] #Ensures that the segment is not removed since the acceptance rate is 0.9824769037
