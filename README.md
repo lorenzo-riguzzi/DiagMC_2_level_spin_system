@@ -80,8 +80,8 @@ Observable |  MC Estimate  |  Analytical  |  Abs Difference
 The results of a convergence test are printed in *.csv* format. An example of such results is shown in the [examples](examples) folder, with the file: [convergence_test_results.csv](examples/convergence_test_results.csv). The calculation also prints on terminal after which number of MC runs the required accuracy is reached for the two magnetizations. All these results can be visualized in an easier way by plotting the results using the [plot_convergence.py](plots/plot_convergence.py) script in the plots folder. Examples of such results are contained in the [examples](examples) folder and are [convergence_test_results_m_x.png](examples/convergence_test_results_m_x.png) and [convergence_test_results_m_z.png](examples/convergence_test_results_m_z.png):
 
 <p align="center">
-  <img src="examples/convergence_test_results_m_x.png" width="500">
-  <img src="examples/convergence_test_results_m_z.png" width="500">
+  <img src="examples/convergence_test_results_m_x.png" width="350">
+  <img src="examples/convergence_test_results_m_z.png" width="350">
 </p>
 
 here the red area contains the points that are below the required convergence threshold. Convergence is considered to be reached if all the points after a certain *N_runs* are inside the red area.
@@ -91,18 +91,18 @@ here the red area contains the points that are below the required convergence th
 The results of the sweep mode are printed in a *.csv* file. In the [examples](examples) folder one can find an example for each possible variable of the magnetizations ($h$, $\Gamma$, $\beta$). These are the files [sweep_h.csv](examples/sweep_h.csv), [sweep_Gamma.csv](examples/sweep_Gamma.csv) and [sweep_beta.csv](examples/sweep_beta.csv). These contain the MC and analytical results of the two magnetizations, together also with the variable kept fixed during the simulation (which are used by the plotting script to insert them in the titles of the plots). These results were obtained with *N_runs = 500000* for the sweeps over $h$ and $\Gamma$ and for *N_runs = 1000000* for the sweep over $\beta$, which required a higher number of MC runs to reach a good agreement with the analytical values for high $\beta$. The [examples](examples) folder also contains the plots [sweep_h_m_x.png](examples/sweep_h_m_x.png), [sweep_h_m_z.png](examples/sweep_h_m_z.png), [sweep_Gamma_m_x.png](examples/sweep_Gamma_m_x.png), [sweep_Gamma_m_z.png](examples/sweep_Gamma_m_z.png), [sweep_beta_m_x.png](examples/sweep_beta_m_x.png) and [sweep_beta_m_z.png](examples/sweep_beta_m_z.png):
 
 <p align="center">
-  <img src="examples/sweep_h_m_x.png" width="500">
-  <img src="examples/sweep_h_m_z.png" width="500">
+  <img src="examples/sweep_h_m_x.png" width="350">
+  <img src="examples/sweep_h_m_z.png" width="350">
 </p>
 
 <p align="center">
-  <img src="examples/sweep_Gamma_m_x.png" width="500">
-  <img src="examples/sweep_Gamma_m_z.png" width="500">
+  <img src="examples/sweep_Gamma_m_x.png" width="350">
+  <img src="examples/sweep_Gamma_m_z.png" width="350">
 </p>
 
 <p align="center">
-  <img src="examples/sweep_beta_m_x.png" width="500">
-  <img src="examples/sweep_beta_m_z.png" width="500">
+  <img src="examples/sweep_beta_m_x.png" width="350">
+  <img src="examples/sweep_beta_m_z.png" width="350">
 </p>
 
 
