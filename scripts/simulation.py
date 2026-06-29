@@ -231,6 +231,8 @@ def sweep(config: dict) -> None:
     
     start_time = time.perf_counter()
     
+    print("\n" + "The simulation started, this might take a while depending on the number of MC runs and the number of points chosen" + "\n")
+    
     for value in sweep_values:
         
         diagram = Diagram_Random(

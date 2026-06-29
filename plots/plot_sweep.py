@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
 
 def plot_sweep(results_file: str = "sweep_results.csv"):
     """
@@ -39,9 +40,19 @@ def plot_sweep(results_file: str = "sweep_results.csv"):
     
     plt_mz.grid(True, which="both", linestyle="--", alpha=0.5)
     
-    plt_mz.set_title(f"Sweep results over ${variable_name}$ of $m_z$ for $\{fixed_var_1_name}={fixed_var_1_value}$ and $\{fixed_var_2_name}={fixed_var_2_value}$")
+    symbols = {
+        "Gamma": r"\Gamma",
+        "beta": r"\beta",
+        "h": "h"
+    }
+    
+    variable_symbol = symbols[variable_name]
+    fix_var_1_symbol = symbols[fixed_var_1_name]
+    fix_var_2_symbol = symbols[fixed_var_2_name]
+    
+    plt_mz.set_title(f"Sweep results over ${variable_symbol}$ of $m_z$ for ${fix_var_1_symbol}={fixed_var_1_value}$ and ${fix_var_2_symbol}={fixed_var_2_value}$")
     plt_mz.set_ylabel("$m_z$")
-    plt_mz.set_xlabel(f"${variable_name}$")
+    plt_mz.set_xlabel(f"${variable_symbol}$")
     
     plt_mz.legend()
     
@@ -56,9 +67,9 @@ def plot_sweep(results_file: str = "sweep_results.csv"):
     
     plt_mx.grid(True, which="both", linestyle="--", alpha=0.5)
     
-    plt_mx.set_title(f"Sweep results over ${variable_name}$ of $m_x$ for $\{fixed_var_1_name}={fixed_var_1_value}$ and $\{fixed_var_2_name}={fixed_var_2_value}$")
+    plt_mx.set_title(f"Sweep results over ${variable_symbol}$ of $m_x$ for ${fix_var_1_symbol}={fixed_var_1_value}$ and ${fix_var_2_symbol}={fixed_var_2_value}$")
     plt_mx.set_ylabel("$m_x$")
-    plt_mx.set_xlabel(f"${variable_name}$")
+    plt_mx.set_xlabel(f"${variable_symbol}$")
     
     plt_mx.legend()
     
@@ -69,5 +80,9 @@ def plot_sweep(results_file: str = "sweep_results.csv"):
     plt.show()
     
 if __name__ == "__main__":
-    plot_sweep()
+    if len(sys.argv) > 1:
+        results_file = sys.argv[1]
+        plot_sweep(results_file)
+    else:
+        plot_sweep()
 

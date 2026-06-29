@@ -3,14 +3,14 @@
         "beta": 5.0
         "s_0": -1
         "vertices": []
-        "h": 0.5
-        "Gamma": 1.0
+        "h": 0.3
+        "Gamma": 0.5
         "seed_number": 42
 
 #Simulation parameters
 "simulation_params": 
     "N_thermalization": 5000 #Number of thermalization steps
-    "N_runs": 500000 #Number of Monte Carlo runs
+    "N_runs": 1000000 #Number of Monte Carlo runs
 
 # Simulation modes. The options are: "single_run", "convergence_test", and "sweep". 
 "mode": "sweep" #Chose the simulation mode among "mode_options"
@@ -25,8 +25,8 @@
         "output_file": "convergence_test_results.csv" # Output file for the convergence test results
 
     "sweep": # Performs a sweep of the magnetization as a function of a variable (h, Gamma or beta)
-        "variable": "h" #variable over which the sweep is performed (only beta, h and Gamma are accepted)
-        "variable_start": -2.0
-        "variable_end": 2.0
-        "variable_step": 0.05
-        "output_file": "sweep_results.csv" # Output file for the sweep results
+        "variable": "beta" #variable over which the sweep is performed (only beta, h and Gamma are accepted)
+        "variable_start": 1
+        "variable_end": 10
+        "variable_step": 0.2
+        "output_file": "sweep_beta.csv" # Output file for the sweep results

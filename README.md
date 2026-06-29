@@ -25,6 +25,14 @@ $ python3 -m pytest
 
 ## How to run the simulation
 
+The user can run the required calculation by running:
+
+```bash
+$ python3 main.py config.yaml
+```
+
+where instead of *config.yaml* the user can specify his own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling the [main.py](main.py) function.
+
 ## Example results
 
 ## Structure of the code
@@ -44,7 +52,7 @@ The user can also define his own alternative [config.yaml](config.yaml) file to 
 
 ### [main.py](main.py)
 
-This contains the main function of the code, which performs the required simulation following the instructions of the configuration file. It calls either the *single_run* function, the *convergence_test* function or the *sweep_function*. The user can run the required calculation by running:
+This contains the main function of the code, which performs the required simulation following the instructions of the configuration file. It calls either the *single_run* function, the *convergence_test* function or the *sweep_function*. If no argument is specified when calling [main.py](main.py), the function uses a file named [config.yaml](config.yaml), as the one already furnished.
 
 ### [scripts/diagram.py](scripts/diagram.py)
 
