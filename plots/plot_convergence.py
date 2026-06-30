@@ -1,13 +1,14 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
 
 def plot_convergence(results_file: str = "convergence_test_results.csv"):
     """ 
         Plots the convergence test for the magnetizations
         
         PARAMETERS:
-        results_file = name of the file with the required results (the file must be in the results directory)
+        results_file: name of the file with the required results (the file must be in the results directory)
     """
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -71,4 +72,8 @@ def plot_convergence(results_file: str = "convergence_test_results.csv"):
 
 
 if __name__ == "__main__":
-    plot_convergence()
+    if len(sys.argv) > 1:
+        results_file = sys.argv[1]
+        plot_convergence(results_file)
+    else:
+        plot_convergence()

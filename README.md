@@ -13,13 +13,13 @@ $ cd DiagMC_2_level_spin_system
 TypeErrors are checked with [mypy](https://mypy.readthedocs.io/en/stable/). To verify that no TypeError is present in the code run:
 
 ```bash
-$ python3 -m mypy . --explicit-package-bases --ignore-missing-imports
+$ python -m mypy . --explicit-package-bases --ignore-missing-imports
 ```
 
 The files that perform unit testing are contained in the [tests](tests) folder and are [test_diagram.py](tests/test_diagram.py) and [test_simulation.py](tests/test_simulation.py). These contain the tests relative to the function in the [diagram.py](scripts/diagram.py) file and [simulation.py](scripts/simulation.py) file respectively. Tests are performed using [pytest](https://happytest.readthedocs.io/en/latest/contents/). To ensure that all the test are passed run:
 
 ```bash
-$ python3 -m pytest
+$ python -m pytest
 ```
 
 
@@ -28,22 +28,22 @@ $ python3 -m pytest
 The user can run the required calculation by running:
 
 ```bash
-$ python3 main.py config.yaml
+$ python main.py config.yaml
 ```
 
-where instead of *config.yaml* the user can specify his own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling the [main.py](main.py) function.
+where instead of *config.yaml* the user can specify his own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling [main.py](main.py). In the [config.yaml](config.yaml) specify the type of calculation that you want to perform: *single_run*, *convergence_test* or *sweep* in the *mode* option of the file. Further details on these sections are written in the [Structure of the code](#structure-of-the-code) section.
 
 If the user performs a *convergence_test* or a *sweep* calculation the results are printed in a *.csv* file. These results can be visualized graphically using the scripts in the [plots](plots) folder. To visualize the results of the magnetizations as a function of the number of MC runs of a convergence test calculation run:
 
 ```bash
-$ python3 plots/plot_convergence.py convergence_output_name.csv
+$ python plots/plot_convergence.py convergence_output_name.csv
 ```
 
 where *convergence_output_name* is the name of the output that one wants to plot, that must be specified in the [config.yaml](config.yaml).
 For the results of a sweep calculation, instead, run:
 
 ```bash
-$ python3 plots/plot_sweep.py sweep_output_name.csv
+$ python plots/plot_sweep.py sweep_output_name.csv
 ```
 
 where the name of the output is always to be specified in the [config.yaml](config.yaml).
@@ -84,7 +84,15 @@ The results of a convergence test are printed in *.csv* format. An example of su
   <img src="examples/convergence_test_results_m_z.png" width="350">
 </p>
 
-here the red area contains the points that are below the required convergence threshold. Convergence is considered to be reached if all the points after a certain *N_runs* are inside the red area.
+here the red area contains the points that are below the required convergence threshold. Convergence is considered to be reached if all the points after a certain *N_runs* are inside the red area. Notice that if you want to visualize these results without first running the simulation by yourself you need to create a *results* folder and copy inside it the data you want to plot from the [examples](examples) folder, since the script looks for data inside the results folder. In order to do so do first:
+
+```bash
+
+$ mkdir results
+$ cp examples/convergence_test_results.csv results
+
+```
+
 
 ### sweep
 
@@ -105,7 +113,16 @@ The results of the sweep mode are printed in a *.csv* file. In the [examples](ex
   <img src="examples/sweep_beta_m_z.png" width="350">
 </p>
 
+Similarly to what was said before, if you want to plot the results without running the simulation on your own do first:
 
+```bash
+
+$ mkdir results
+$ cp examples/sweep_h.csv results
+$ cp examples/sweep_Gamma.csv results
+$ cp examples/sweep_beta.csv results
+
+```
 
 
 ## Structure of the code

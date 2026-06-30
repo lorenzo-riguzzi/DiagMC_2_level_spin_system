@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
-def plot_sweep(results_file: str = "sweep_results.csv"):
+def plot_sweep(results_file: str = "sweep_h.csv"):
     """
         Plots the results of the sweep simulation
         
@@ -39,6 +39,8 @@ def plot_sweep(results_file: str = "sweep_results.csv"):
     plt_mz.plot(dataframe[variable_name], dataframe["m_z (Analytical)"], label = "Analytical", color = "blue")
     
     plt_mz.grid(True, which="both", linestyle="--", alpha=0.5)
+    
+    """ The following dictionary is needed only to be able to plot beta and Gamma as greek letters in the plot while keeping h a normal letter """
     
     symbols = {
         "Gamma": r"\Gamma",
