@@ -3,12 +3,13 @@ import math
 import random
 class Diagram():
     
-    """ This class implements the Feynman diagram of a single spin 1/2 particle. 
+    """
+        This class implements the Feynman diagram of a single spin 1/2 particle. 
     
         Attributes:
-            beta: inverse temperature (gives the length of the diagram)
+            beta: inverse temperature (gives the length of the diagram, must be greater than 0)
             s_0: spin of the initial spin of the first segment of the diagram (can be either +/-1, the default value is set arbitrary to -1)
-            vertices: list of vertices in the diagram (where the spin flips occur, the default value is an empty list)
+            vertices: list of vertices in the diagram (where the spin flips occur, the default value is an empty list, the vertices must all be lower than beta)
             Gamma: external field along the x axis
             h: external field along the z axis
     """
@@ -45,12 +46,17 @@ class Diagram():
         self.number_vertices = len(self.vertices) #Number of vertices of the diagram
     
     def analytical_m_z(self) -> float: 
-        """ Evaluate the magnetization along the z axis of the diagram using the analytical formula.
+        
+        """ 
+            Evaluate the magnetization along the z axis of the diagram using the analytical formula.
             
             PARAMETERS (taken from the class):
             beta: inverse temperature
             h: field along the z direction
             Gamma: field along the x direction
+            
+            RETURNS:
+            float m_z: magnetization along the z axis
         """
         if self.h == 0.0 and self.Gamma == 0.0:
             m_z = 0.0
@@ -61,12 +67,17 @@ class Diagram():
             return m_z
     
     def analytical_m_x(self) -> float:
-        """ Evaluate the magnetization along the x axis of the diagram using the analytical formula.
+        
+        """ 
+            Evaluate the magnetization along the x axis of the diagram using the analytical formula.
             
             PARAMETERS (taken from the class):
             beta: inverse temperature
             h: field along the z direction
             Gamma: field along the x direction
+            
+            RETURNS:
+            float m_x: magnetization along the x axis
         """
         if self.Gamma == 0.0 and self.h == 0.0:
             m_x = 0.0
@@ -77,22 +88,31 @@ class Diagram():
             return m_x
     
     def evaluate_m_z_of_diagram(self) -> float:
-        """ Evaluate the magnetization along the z axis of the diagram.
+        
+        """ 
+            Evaluate the magnetization along the z axis of the diagram.
             
             PARAMETERS (taken from the class):
             s_0: spin of the initial segment
             beta: inverse temperature
-            sum_with_alternating_sign: sum of the vertices with alternating sign       
+            sum_with_alternating_sign: sum of the vertices with alternating sign  
+            
+            RETURNS:
+            float m_z: MC magnetization along the z axis     
         """
         m_z =self.s_0 - 2* self.s_0 * self.sum_with_alternating_sign / self.beta
         return m_z
     
     def evaluate_m_x_of_diagram(self) -> float:
-        """ Evaluate the magnetization along the x axis of the diagram.
+        
+        """ 
+            Evaluate the magnetization along the x axis of the diagram.
             
             PARAMETERS (taken from the class):
             Gamma: external field along the x axis
             beta: inverse temperature
+            RETURNS:
+            float m_x: MC magnetization along the x axis
         """
         if self.Gamma == 0.0:
             m_x = 0.0
@@ -102,21 +122,33 @@ class Diagram():
             return m_x
     
     def acceptance_rate_flip(self) -> float:
-        """ Evaluate the acceptance rate for a spin flip
+        
+        """ 
+            Evaluate the acceptance rate for a spin flip
             
             PARAMETERS (taken from the class):
             beta: inverse temperature
             s_0: spin of the initial segment
             h: field along the z direction
             sum_with_alternating_sign: sum of the vertices with alternating sign
+            
+            RETURNS:
+            float alpha_flip: acceptance rate for a spin flip
         """
         
         weight_ratio = math.exp(2*self.h*self.s_0*(self.beta-2*self.sum_with_alternating_sign)) 
         alpha_flip = min(1, weight_ratio)
         return alpha_flip
     
-    def acceptance_rate_add_segment(self, tau_i: float, tau_f: float, tau_after_f: float, segment_spin: int,) -> float:
-        """ Evaluate the acceptance rate for adding a segment to the diagram
+    def acceptance_rate_add_segment(
+                                    self,
+                                    tau_i: float,
+                                    tau_f: float, tau_after_f: float,
+                                    segment_spin: int
+                                    ) -> float:
+        
+        """ 
+            Evaluate the acceptance rate for adding a segment to the diagram
             
             PARAMETERS (taken from the class):
             beta: inverse temperature
@@ -129,6 +161,9 @@ class Diagram():
             tau_f: end of the new added segment
             segment_spin: spin of the new added segment (can be either +/-1)
             tau_after_f: position of the vertex located after tau_f
+            
+            RETURNS:
+            float alpha_add: acceptance rate for adding a segment
         """
         
         weight_ratio = self.Gamma**2*math.exp(-2*self.h*segment_spin*(tau_f-tau_i))
@@ -136,8 +171,16 @@ class Diagram():
         alpha_add = min(1, weight_ratio * q_ratio)
         return alpha_add
     
-    def acceptance_rate_remove_segment(self, tau_i: float, tau_f: float, tau_after_f: float, segment_spin: int) -> float:
-        """ Evaluate the acceptance rate for adding a segment to the diagram
+    def acceptance_rate_remove_segment(
+                                        self, 
+                                        tau_i: float, 
+                                        tau_f: float, 
+                                        tau_after_f: float, 
+                                        segment_spin: int
+                                        ) -> float:
+        
+        """ 
+            Evaluate the acceptance rate for removing a segment from the diagram
             
             PARAMETERS (taken from the class):
             beta: inverse temperature
@@ -150,6 +193,9 @@ class Diagram():
             tau_f: end of the removed segment
             segment_spin: spin of the removed segment (can be either +/-1)
             tau_after_f: position of the vertex located after tau_f
+            
+            RETURNS:
+            float alpha_remove: acceptance rate for removing a segment
         """
         
         weight_ratio = self.Gamma**(-2)*math.exp(2*self.h*segment_spin*(tau_f-tau_i))
@@ -157,11 +203,21 @@ class Diagram():
         alpha_remove = min(1, weight_ratio * q_ratio)
         return alpha_remove
     
-    def try_flip_spin(self, random_number: float) -> None:
-        """ Try to flip the spin of the diagram, by comparing a random number with the acceptance rate of the flip. 
+    def try_flip_spin(
+                        self,
+                        random_number: float
+                        ) -> None:
+        
+        """ 
+            Try to flip the spin of the diagram, by comparing a random number with the acceptance rate of the flip. 
             
             EXTERNAL PARAMETERS:
             random_number: random number between 0 and 1 used to decide whether to accept or reject the flip
+            
+            Does not return anything, just modifies the spin of the diagram
+            
+            RAISES:
+            ValueError: if the random number is lower than 0 or greater than 1
         """
         
         if random_number < 0 or random_number > 1:
@@ -173,8 +229,17 @@ class Diagram():
         else:
             return
     
-    def try_add_segment(self, random_number: float, tau_f: float, tau_i: float, tau_after_f: float, index: int) -> None:
-        """ Try to add a segment to the diagram, by comparing a random number with the acceptance rate of adding a segment. 
+    def try_add_segment(
+                        self, 
+                        random_number: float,
+                        tau_f: float, 
+                        tau_i: float, 
+                        tau_after_f: float, 
+                        index: int
+                        ) -> None:
+        
+        """ 
+            Try to add a segment to the diagram, by comparing a random number with the acceptance rate of adding a segment. 
             
             EXTERNAL PARAMETERS:
             random_number: random number between 0 and 1 used to decide whether to accept or reject the addition of the segment
@@ -182,6 +247,12 @@ class Diagram():
             tau_f: end of the new added segment
             tau_after_f: position of the vertex located after tau_f
             index: index of tau_after_f, which correspond to the one of tau_i once it's inserted
+            
+            Does not return anything, just adds two vertices to the diagram
+            
+            RAISES:
+            ValueError: if the random number is lower than 0 or greater than 1
+            ValueError: if the imaginary time vertices to add are not well ordered
         """
         
         if random_number < 0 or random_number > 1:
@@ -193,7 +264,8 @@ class Diagram():
         if tau_after_f < tau_f:
             raise ValueError(f"tau_after_f must be greater than tau_f. Current values are tau_after_f={tau_after_f} and tau_f={tau_f}.")
         
-        """Finds the vertex right after tau_f and its index.
+        """ 
+            Finds the vertex right after tau_f and its index.
             The index correspond to the one of tau_i once it's inserted.
             If no match is found the vertex next to tau_f is beta and its index is number_vertices+1.
         """
@@ -210,15 +282,27 @@ class Diagram():
         else:
             return
     
-    def try_remove_segment(self, random_number: float, remove_index : int) -> None:
-        """ Try to remove a segment from the diagram, by comparing a random number with the acceptance rate of removing a segment.
+    def try_remove_segment(
+                            self, 
+                            random_number: float, 
+                            remove_index : int
+                            ) -> None:
+        
+        """ 
+            Try to remove a segment from the diagram, by comparing a random number with the acceptance rate of removing a segment.
             The update is discarded automatically if the diagram has no vertices (nothing can be removed).
             
             EXTERNAL PARAMETERS:
             random_number: random number between 0 and 1 used to decide whether to accept or reject the removal of the segment
             remove_index: index of the first vertex to remove
+            
+            Does not return anything, just removes two vertices from the diagram
+            
+            RAISES:
+            ValueError: if the random number is lower than 0 or greater than 1
+            ValueError: if the index to be removed is invalid (lower than 0, or greater than the last element of vertices, since the next vertex to be removed can not be beta)
         """
-        
+                
         if random_number < 0 or random_number > 1:
             raise ValueError(f"Random number must be between 0 and 1. Current value is {random_number}.")
             
@@ -242,10 +326,11 @@ class Diagram():
 
 class Diagram_Random(Diagram):
     
-    """Child class of the Diagram class, which implements random methods to perform the Monte Carlo simulation
+    """ 
+        Child class of the Diagram class, which implements random methods to perform the Monte Carlo simulation
     
         Attributes:
-        Same as the Diagram class,
+        Same as the Diagram class (inherited),
         random_generator: random number generator used to perform the Monte Carlo simulation (sets the seed for the class instance)
     """
     
@@ -261,15 +346,23 @@ class Diagram_Random(Diagram):
         self.random_generator = random.Random(seed_number)
     
     def random_try_spin_flip(self) -> None:
-        """ Try to flip the spin of the diagram, by comparing a random number with the acceptance rate of the flip.
+        
+        """ 
+            Tries to flip the spin of the diagram, by comparing a random number with the acceptance rate of the flip.
             Only needs parameters that come from the class and generate the random number inside the method.
+            
+            Does not return anything, just modifies the spin of the diagram
         """
         random_number = self.random_generator.uniform(0, 1)
         self.try_flip_spin(random_number)
     
     def random_try_add_segment(self) -> None:
-        """ Try to add a segment to the diagram, by comparing a random number with the acceptance rate of adding a segment.
+        
+        """ 
+            Tries to add a segment to the diagram, by comparing a random number with the acceptance rate of adding a segment.
             Only needs parameters that come from the class and generate the random number inside the method.
+            
+            Does not return anything, just adds two vertices to the diagram
         """
         tau_i = self.random_generator.uniform(0, self.beta)
         
@@ -283,8 +376,12 @@ class Diagram_Random(Diagram):
         self.try_add_segment(random_number, tau_f, tau_i, tau_after_f, index)
     
     def random_try_remove_segment(self) -> None:
-        """ Try to remove a segment from the diagram, by comparing a random number with the acceptance rate of removing a segment.
+        
+        """ 
+            Tries to remove a segment from the diagram, by comparing a random number with the acceptance rate of removing a segment.
             Only needs parameters that come from the class and generate the random number inside the method.
+            
+            Does not return anything, just removes two vertices from the diagram
         """
         
         if self.number_vertices == 0:
@@ -296,8 +393,12 @@ class Diagram_Random(Diagram):
             self.try_remove_segment(random_number, removed_index)
     
     def chose_update(self) -> None:
-        """ Try to perform a random update of the diagram, by randomly choosing between the three possible updates (flip, add segment, remove segment).
+        
+        """ 
+            Try to perform a random update of the diagram, by randomly choosing between the three possible updates (flip, add segment, remove segment).
             Only needs parameters that come from the class and generate the random number inside the method.
+            
+            Does not return anything, just choses randomly one of the three possible updates and tries to perform it
         """
         extracted_number = self.random_generator.uniform(0, 1)
         

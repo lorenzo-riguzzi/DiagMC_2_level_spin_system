@@ -15,8 +15,9 @@ from scripts.simulation import single_run, convergence_test, sweep
 """ Tests for the methods in the simulation.py file """
 
 
-def test_single_run_input_parameters_value_errors():
-    """ Tests that, if the input parameters in the config.yaml file are invalid, ValueError is raised """
+def test_single_run_invalid_beta():
+    
+    """ Tests that, if the beta in the config.yaml file is negative, a ValueError is raised """
     
     invalid_config_beta = {
         "mode": "single_run",
@@ -35,6 +36,11 @@ def test_single_run_input_parameters_value_errors():
     
     with pytest.raises(ValueError): 
         single_run(invalid_config_beta)
+        
+
+def test_single_run_invalid_s_0():
+    
+    """ Tests that, if the s_0 in the config.yaml file is not +/- 1, a ValueError is raised """
     
     invalid_config_s_0 = {
         "mode": "single_run",
@@ -54,6 +60,10 @@ def test_single_run_input_parameters_value_errors():
     with pytest.raises(ValueError): 
         single_run(invalid_config_s_0)
     
+def test_single_run_invalid_vertices():
+    
+    """ Tests that, if a vertex in the config.yaml file is negative, a ValueError is raised """
+    
     invalid_config_negative_vertex = {
         "mode": "single_run",
         "diagram_params": {
@@ -72,6 +82,8 @@ def test_single_run_input_parameters_value_errors():
     
     with pytest.raises(ValueError): 
         single_run(invalid_config_negative_vertex)
+        
+    """ Tests that, if a vertex in the config.yaml file is greater than beta, a ValueError is raised """
     
     invalid_config_vertex_greater_than_beta = {
         "mode": "single_run",
@@ -91,6 +103,8 @@ def test_single_run_input_parameters_value_errors():
     
     with pytest.raises(ValueError): 
         single_run(invalid_config_vertex_greater_than_beta)
+        
+    """ Tests that, if the number of vertices in the config.yaml file is odd, a ValueError is raised """
     
     invalid_config_odd_vertices = {
         "mode": "single_run",
@@ -111,6 +125,11 @@ def test_single_run_input_parameters_value_errors():
     with pytest.raises(ValueError): 
         single_run(invalid_config_odd_vertices)
     
+    
+def test_single_run_invalid_N_thermalization_and_N_runs():
+    
+    """ Tests that, if the N_thermalization in the config.yaml file is negative, a ValueError is raised """
+    
     invalid_config_negative_N_thermalization = {
         "mode": "single_run",
         "diagram_params": {
@@ -128,6 +147,8 @@ def test_single_run_input_parameters_value_errors():
     
     with pytest.raises(ValueError): 
         single_run(invalid_config_negative_N_thermalization)
+    
+    """ Tests that, if the N_runs in the config.yaml file is negative, a ValueError is raised """
     
     invalid_config_negative_N_runs = {
         "mode": "single_run",
@@ -147,12 +168,17 @@ def test_single_run_input_parameters_value_errors():
     with pytest.raises(ValueError): 
         single_run(invalid_config_negative_N_runs)
     
+def test_single_run_empty_config():
+    
+    """ Tests that a KeyError is raised when an empty config dictionary is passed to single_run """
+    
     empty_config = {}
     
     with pytest.raises(KeyError):
         single_run(empty_config)
 
 def test_single_run_is_deterministic(capsys):
+    
     """ Tests that, if the seed is fixed, the results of single_run are deterministic """
     
     config = {
@@ -198,9 +224,12 @@ valid_config_convergence = {
     }
 }
 
-def test_convergence_test_input_parameters_value_errors():
-    wrong_config = copy.deepcopy(valid_config_convergence)
-    wrong_config["mode_options"]={
+def test_convergence_test_negative_N_start():
+    
+    """ Tests that, if the N_start in the config.yaml file is negative, a ValueError is raised """
+    
+    wrong_config_negative_N_start = copy.deepcopy(valid_config_convergence)
+    wrong_config_negative_N_start["mode_options"]={
         "convergence_test": {
             "N_start": -10, # Invalid negative N_start
             "N_end": 30,
@@ -211,10 +240,15 @@ def test_convergence_test_input_parameters_value_errors():
     }
     
     with pytest.raises(ValueError, match="must be positive non-null integers"):
-        convergence_test(wrong_config)
+        convergence_test(wrong_config_negative_N_start)
     
+
+def test_convergence_test_N_end_lower_than_N_start():
     
-    wrong_config["mode_options"]={
+    """ Tests that, if the N_end in the config.yaml file is lower than N_start, a ValueError is raised """
+    
+    wrong_config_N_end_lower_than_n_start = copy.deepcopy(valid_config_convergence)
+    wrong_config_N_end_lower_than_n_start["mode_options"]={
         "convergence_test": {
             "N_start": 40,
             "N_end": 30,
@@ -225,9 +259,10 @@ def test_convergence_test_input_parameters_value_errors():
     }
     
     with pytest.raises(ValueError):
-        convergence_test(wrong_config)
+        convergence_test(wrong_config_N_end_lower_than_n_start)
 
 def test_convergence_test_output_files_created():
+    
     """ Verifies that the .csv output files are created after running convergence_test with valid parameters """
     
     convergence_test(valid_config_convergence)
@@ -270,7 +305,8 @@ valid_config_sweep = {
 }
 
 def test_invalid_sweep_variable():
-    """ Test that a ValueError is raised when an invalid variable is provided """
+    
+    """ Test that a ValueError is raised when an invalid variable is given as input """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
     invalid_config["mode_options"]["sweep"]["variable"] = "s_0"
@@ -286,6 +322,7 @@ def test_invalid_sweep_test():
         sweep(invalid_config)
 
 def test_invalid_sweep_range():
+    
     """ Tests that a ValueError is raised when variable_start >= variable_end """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
@@ -295,6 +332,7 @@ def test_invalid_sweep_range():
         sweep(invalid_config)
 
 def test_negative_N_runs_sweep():
+    
     """ Tests that a ValueError is raised when N_runs is negative in the config for sweep """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
@@ -303,6 +341,7 @@ def test_negative_N_runs_sweep():
         sweep(invalid_config)
 
 def test_negative_N_thermalization_sweep():
+    
     """ Tests that a ValueError is raised when N_thermalization is negative in the config for sweep """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
@@ -311,6 +350,7 @@ def test_negative_N_thermalization_sweep():
         sweep(invalid_config)
 
 def test_sweep_output_files_created():
+    
     """ Verifies that the .csv output files are created after running sweep with valid parameters """
     
     sweep(valid_config_sweep)

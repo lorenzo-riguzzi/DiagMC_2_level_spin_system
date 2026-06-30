@@ -5,7 +5,9 @@ import os
 import numpy as np
 
 def single_run(config: dict) -> None:
-    """ Execute a single Monte Carlo run and prints the results on terminal
+    
+    """ 
+        Executes a single Monte Carlo run and prints the results on terminal
         Takes the parameters from the config.yaml file
     """
     
@@ -72,7 +74,10 @@ def single_run(config: dict) -> None:
 
 
 def convergence_test(config: dict) -> None:
-    """ Execute a convergence test for the Monte Carlo simulation and prints the results in .csv format
+    
+    """ 
+        Executes a convergence test for the Monte Carlo simulation and prints the results in .csv format.
+        This is done calculating the difference between the MC and the analytical magnetizations for different N_runs
         Takes the parameters from the config.yaml file
     """
     
@@ -194,7 +199,10 @@ def convergence_test(config: dict) -> None:
     print('\n' + f"Convergence test performed successfully in {convergence_test_time:.2f} seconds!" + "\n")
 
 def sweep(config: dict) -> None:
-    """ Performs the MC simulation for different values of the variable chosen in the config.yaml file (beta, Gamma, h).
+    
+    """ 
+        Performs the MC simulation for different values of the variable chosen in the config.yaml file (beta, Gamma, h).
+        Raises a ValueError is the sweep variable is not one of the allowed ones.
         Prints the results in .csv format.
         Takes the input parameters from the config.yaml file
     """
