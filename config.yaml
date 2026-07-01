@@ -10,7 +10,7 @@
 #Simulation parameters
 "simulation_params": 
     "N_thermalization": 5000 #Number of thermalization steps
-    "N_runs": 1000000 #Number of Monte Carlo runs
+    "N_runs": 500000 #Number of Monte Carlo runs
 
 # Simulation modes. The options are: "single_run", "convergence_test", and "sweep". 
 "mode": "single_run" #Chose the simulation mode among "mode_options"
