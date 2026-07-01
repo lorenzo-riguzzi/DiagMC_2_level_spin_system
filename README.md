@@ -10,6 +10,12 @@ $ git clone https://github.com/lorenzo-riguzzi/DiagMC_2_level_spin_system.git
 $ cd DiagMC_2_level_spin_system
 ```
 
+All the required packages used in the software are included in the [requirements.txt](requirements.txt) file. You can install them all of them using [pip](https://pypi.org/project/pip/)by running:
+
+```bash
+$ pip install -r requirements.txt
+```
+
 TypeErrors are checked with [mypy](https://mypy.readthedocs.io/en/stable/). To verify that no TypeError is present in the code run:
 
 ```bash
