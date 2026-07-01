@@ -25,8 +25,8 @@
         "output_file": "convergence_test_results.csv" # Output file for the convergence test results
 
     "sweep": # Performs a sweep of the magnetization as a function of a variable (h, Gamma or beta)
-        "variable": "beta" #variable over which the sweep is performed (only beta, h and Gamma are accepted)
-        "variable_start": 1
-        "variable_end": 10
-        "variable_step": 0.2
-        "output_file": "sweep_beta.csv" # Output file for the sweep results
+        "variable": "h" #variable over which the sweep is performed (only beta, h and Gamma are accepted)
+        "variable_start": -2
+        "variable_end": 2
+        "variable_step": 0.1
+        "output_file": "sweep_h.csv" # Output file for the sweep results

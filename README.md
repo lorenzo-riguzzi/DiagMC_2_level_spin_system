@@ -166,7 +166,7 @@ This file implements the three different simulation modes. All these functions t
 
 ## Theoretical background
 
-Diagrammatic Monte Carlo is a powerful method which allows one to evaluate integrals which appear in the form of the diagrammatic series:
+[Diagrammatic Monte Carlo](https://arxiv.org/abs/0707.4259) is a powerful method which allows one to evaluate integrals which appear in the form of the diagrammatic series:
 
 $$ Q(\{y\})=\sum_{n=0}^{\infty}\sum_{\xi_n}\int dx_1...\int dx_n D_n^{\xi_n}(\{y\}; x_1, ..., x_n) $$
 
@@ -179,7 +179,7 @@ The starting point of the simulation is the Hamiltonian of a single spin in an e
 
 $$ \hat{H}=\hat{H}_0+\hat{H}_1=h\sigma_z+\Gamma\sigma_x $$
 
-where $\sigma_x$, $\sigma_z$ are Pauli matrices and $h$ and $\Gamma$ are the strength of the field along the $z$ and $x$ direction respectively. The Hamiltonian can be written in the basis of eigenstates of $\sigma_z$: $\ket{\uparrow}$ and $\ket{\downarrow}$ and can be diagonalized, finding its two eigenvalues: $E_{\pm}=\pm\sqrt{h^2+\Gamma^2}=\pm E$ and their corresponding eigenstates $\ket{\Psi_+}$ and $\ket{\Psi_-}$.
+where $\sigma_x$, $\sigma_z$ are Pauli matrices and $h$ and $\Gamma$ are the intensities of the field along the $z$ and $x$ direction respectively. The Hamiltonian can be written in the basis of eigenstates of $\sigma_z$: $\ket{\uparrow}$ and $\ket{\downarrow}$ and can be diagonalized, finding its two eigenvalues: $E_{\pm}=\pm\sqrt{h^2+\Gamma^2}=\pm E$ and their corresponding eigenstates $\ket{\Psi_+}$ and $\ket{\Psi_-}$.
 
 With these the partition function is given by:
 
@@ -212,13 +212,13 @@ We want to implement a Markov-chain, where the different updates from an initial
 
 $$  \alpha = \min\left(1, \quad \frac{D_{n_f}^{s_f}(\{\tau\}_f)}{D_{n_i}^{s_i}(\{\tau\}_i)}\frac{p(i|f)}{p(f|i)}\right) $$
 
-where $p(f|i)$ is the proposal distribution from which we chose the update to go from an initial configuration $i$ to a final configuration $f$. With this we can evaluate the transition probabilities of our updates:
+where $p(f|i)$ is the proposal distribution from which we chose the update to go from an initial configuration $i$ to a final configuration $f$, while $p(i|f)$ is the proposal distribution for the opposite process. With this we can evaluate the transition probabilities of our updates:
 
-- **Spin flip**: The update simply flips the spin of all the segments of the diagram and is already the opposite of itself. No random number has to extracted to find the final configuration since we only have to options, which means that we do not have a proposal distribution. The acceptance race is:
+- **Spin flip**: The update simply flips the spin of all the segments of the diagram and is already the opposite of itself. No random number has to be extracted to find the final configuration since we only have two options, which means that we do not have a proposal distribution. The acceptance race is:
 
 $$ \alpha_{flip}=\min\left(1,\quad \frac{D_{n}^{-s}(\tau_1, ..., \tau_n)}{D_{n}^{s}(\tau_1, ..., \tau_n)}\right)=\min\left(1, \quad e^{2\beta hs}e^{-4hs\sum_{i=1}^n (-1)^i\tau_i}\right) $$
 
-- **Add segment**: The update adds two vertices at indices $j$ and $j+1$. The first vertex to be added is extracted from a uniform distribution between 0 and $\beta$ and the second one from a uniform distribution between $\tau_j$ and $\tau_{j+2}$, which means that $p(f|i)=U(0, \beta)U(\tau_j, \tau_{j+2})=1/\beta\cdot 1/(\tau_{j+2}-\tau_j)$. For the opposite process, instead, the first vertex to be removed is extracted uniformly from the $n+2$ vertices present in the final configuration (except for the last vertex since we can not remove $\beta$ from the diagram) and when the first is chosen the second one is constrained to be the next one, so that here the ratio between the proposal distributions is: $p(i|f)=1/(n+1)$. Putting everything together we get:
+- **Add segment**: The update adds two vertices at indices $j$ and $j+1$. The first vertex to be added is extracted from a uniform distribution between 0 and $\beta$ and the second one from a uniform distribution between $\tau_j$ and $\tau_{j+2}$, which means that $p(f|i)=U(0, \beta)U(\tau_j, \tau_{j+2})=1/\beta\cdot 1/(\tau_{j+2}-\tau_j)$. For the opposite process, instead, the first vertex to be removed is extracted uniformly from the $n+2$ vertices present in the final configuration (except for the last vertex since we can not remove $\beta$ from the diagram) and when the first is chosen the second one is constrained to be the next one, so that here theproposal distributions is: $p(i|f)=1/(n+1)$. Putting everything together we get:
 
 $$ \alpha_{add}=\min\left(1,\quad \frac{D_{n+2}^{s}(\tau_1, ...,\tau_j, \tau_{j+1}, ...,  \tau_{n})}{D_{n}^{s}(\tau_1, ..., \tau_n)}\frac{p(i|f)}{p(f|i)}\right)=\min\left(1, \quad \Gamma^2e^{-2hs(-1)^j(\tau_{j+1}-\tau_j)}\frac{\beta(\tau_{j+2}-\tau_j)}{n+1}\right) $$
 
