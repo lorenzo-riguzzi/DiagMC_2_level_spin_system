@@ -3,8 +3,8 @@
         "beta": 5.0
         "s_0": -1
         "vertices": []
-        "h": 0.3
-        "Gamma": 0.5
+        "h": 0.5
+        "Gamma": 1.0
         "seed_number": 42
 
 #Simulation parameters
@@ -28,5 +28,5 @@
         "variable": "h" #variable over which the sweep is performed (only beta, h and Gamma are accepted)
         "variable_start": -2
         "variable_end": 2
-        "variable_step": 0.1
+        "variable_step": 0.2
         "output_file": "sweep_h.csv" # Output file for the sweep results
