@@ -1,15 +1,7 @@
-import os,sys,inspect
-import pandas as pd
-import copy
-
-frame = inspect.currentframe()
-assert frame is not None
-
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(frame)))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0,parent_dir) 
-
 import pytest
+import copy
+import pandas as pd
+import os
 from scripts.simulation import single_run, convergence_test, sweep
 
 """ Tests for the methods in the simulation.py file """
