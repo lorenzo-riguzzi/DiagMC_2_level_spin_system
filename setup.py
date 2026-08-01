@@ -24,7 +24,7 @@ setup(
     long_description=read('README.md'),
     entry_points={
         "console_scripts": [
-            "diagmc = main:main",
+            "diagmc = main:command_line_interface",
         ],
     }
 )
