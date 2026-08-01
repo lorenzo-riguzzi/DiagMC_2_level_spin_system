@@ -10,10 +10,10 @@ $ git clone https://github.com/lorenzo-riguzzi/DiagMC_2_level_spin_system.git
 $ cd DiagMC_2_level_spin_system
 ```
 
-All the required packages used in the software are included in the [requirements.txt](requirements.txt) file. You can install all of them using [pip](https://pypi.org/project/pip/) by running:
+All the required packages used in the software are included in the [requirements.txt](requirements.txt) file. You can install everything needed to run the simulation using [pip](https://pypi.org/project/pip/) by running:
 
 ```bash
-$ pip install -r requirements.txt
+$ pip install -e .
 ```
 
 TypeErrors are checked with [mypy](https://mypy.readthedocs.io/en/stable/). To verify that no TypeError is present in the code run:
@@ -37,7 +37,26 @@ The user can run the required calculation by running:
 $ python main.py config.yaml
 ```
 
-where instead of *config.yaml* users can specify their own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling [main.py](main.py). In the [config.yaml](config.yaml) specify the type of calculation that you want to perform: *single_run*, *convergence_test* or *sweep* in the *mode* option of the file. Further details on this are written in the [Structure of the code](#structure-of-the-code) section.
+or, more simply, even by running:
+
+```bash
+$ diagmc config.yaml
+```
+
+In these last commands, instead of *config.yaml* users can specify their own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling [main.py](main.py) or the *diagmc* command. Users can thus simply run:
+
+```bash
+$ python main.py
+```
+
+or just:
+
+```bash
+$ diagmc
+```
+
+
+ In the [config.yaml](config.yaml) specify the type of calculation that you want to perform: *single_run*, *convergence_test* or *sweep* in the *mode* option of the file. Further details on this are written in the [Structure of the code](#structure-of-the-code) section.
 
 If the user performs a *convergence_test* or a *sweep* calculation the results are printed in a *.csv* file. These results can be visualized graphically using the scripts in the [plots](plots) folder. To visualize the results of the magnetizations as functions of the number of MC runs of a convergence test calculation run:
 
