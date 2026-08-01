@@ -34,6 +34,13 @@ def command_line_interface() -> None:
     )
     
     parser.add_argument(
+        "config_path",
+        nargs="?",
+        default=None,
+        help="Optional path to a .yaml configuration file when running main.py directly (e.g. python main.py custom_config.yaml)"
+    )
+    
+    parser.add_argument(
         "-c", "--config",
         default = "config.yaml",
         help = "Path to the .yaml configuration file (default: config.yaml)"

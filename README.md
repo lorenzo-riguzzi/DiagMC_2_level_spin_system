@@ -38,32 +38,40 @@ $ python -m pytest
 
 ## How to run the simulation
 
-The user can run the required calculation by running:
+The previously explained installation uses the [setup.py](setup.py) file to generate an executable command *diagmc*. This command allows to easily run the simulation. To check all the features of this command use:
 
 ```bash
-$ python main.py config.yaml
+$ diagmc -h
 ```
 
-or, more simply, even by running:
+The code uses a [config.yaml](config.yaml) to chose between three types of calculations that: *single_run*, *convergence_test* or *sweep* in the *mode* option of the file. Further details on these are written in the [Structure of the code](#structure-of-the-code) section.
+The user can run the simulation specified in the [config.yaml](config.yaml) by running:
 
 ```bash
-$ diagmc config.yaml
+$ diagmc -c config.yaml
 ```
 
-In these last commands, instead of *config.yaml* users can specify their own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling [main.py](main.py) or the *diagmc* command. Users can thus simply run:
-
-```bash
-$ python main.py
-```
-
-or just:
+Instead of *config.yaml* users can specify their own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling [main.py](main.py) or the *diagmc* command. Users can thus simply run:
 
 ```bash
 $ diagmc
 ```
 
+Through this command it is possible to chose directly from the terminal the type of calculation to run. If no keyword is specified the chosen *mode* is the one specified in the [config.yaml](config.yaml). Otherwise the user can specify *single_run*, *convergence_test* or *sweep* to chose the type of calculation to run. For example to run a convergence test calculation the user can type:
 
- In the [config.yaml](config.yaml) specify the type of calculation that you want to perform: *single_run*, *convergence_test* or *sweep* in the *mode* option of the file. Further details on this are written in the [Structure of the code](#structure-of-the-code) section.
+```bash
+$ diagmc -c config.yaml convergence_test
+```
+
+where the *-c config.yaml* can be avoided if the user uses a configuration file with the name *config.yaml.
+The simulation can also still be used calling with python the standard main function and specifying the configuration file and the required mode as here, for example, for the *convergence_test* calculation:
+
+```bash
+$ python main.py -c config.yaml convergence_test
+```
+
+Also here *-c config.yaml* can be avoided if one uses a configuration file with the name *config.yaml* and if the mode option is not specified the one written in the [config.yaml](config.yaml) file is used.
+
 
 If the user performs a *convergence_test* or a *sweep* calculation the results are printed in a *.csv* file. These results can be visualized graphically using the scripts in the [plots](plots) folder. To visualize the results of the magnetizations as functions of the number of MC runs of a convergence test calculation run:
 
