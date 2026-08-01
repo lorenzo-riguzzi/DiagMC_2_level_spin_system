@@ -10,6 +10,13 @@ $ git clone https://github.com/lorenzo-riguzzi/DiagMC_2_level_spin_system.git
 $ cd DiagMC_2_level_spin_system
 ```
 
+Before installing everything for the simulation and working with it, you are suggested to create a virtual environment using [venv](https://docs.python.org/3/library/venv.html):
+
+```bash
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+```
+
 All the required packages used in the software are included in the [requirements.txt](requirements.txt) file. You can install everything needed to run the simulation using [pip](https://pypi.org/project/pip/) by running:
 
 ```bash
