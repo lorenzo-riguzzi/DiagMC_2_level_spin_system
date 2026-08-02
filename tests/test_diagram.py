@@ -1,7 +1,7 @@
+""" Tests for the Diagram and Diagram_Random classes """
+
 import pytest
 from scripts.diagram import Diagram, Diagram_Random
-
-"""Tests for the Diagram class"""
 
 def test_negative_beta():
     
@@ -373,7 +373,7 @@ def test_try_add_segment():
     
     """ Tests that the try_add_segment method correctly updates the diagram
     
-        GIVEN: aa diagram, a chosen number between 0 and 1, the vertices tau_i, tau_f and tau_after_f and the index where the segment should be added
+        GIVEN: a diagram, a chosen number between 0 and 1, the vertices tau_i, tau_f and tau_after_f and the index where the segment should be added
         WHEN: the try_add_segment method is called
         THEN: the segment is added if the chosen number is lower than the acceptance rate, otherwise the segment is not added
     """
@@ -524,9 +524,6 @@ def test_try_remove_segment_with_tau__after_f_equal_beta():
     assert pytest.approx(diagram.sum_with_alternating_sign) == 1.0 #Ensures that the sum with alternating sign is correctly updated
     
     assert diagram.number_vertices == 2 #Ensures that the number of vertices is correctly updated
-
-
-""" Tests for the Diagram_Random class """
 
 def test_random_try_spin_flip():
     

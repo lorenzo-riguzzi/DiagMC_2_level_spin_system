@@ -4,11 +4,12 @@ import pandas as pd
 import os
 import numpy as np
 
-def single_run(config: dict) -> None:
+def single_run(config: dict) -> tuple[float, float]:
     
     """ 
         Executes a single Monte Carlo run and prints the results on terminal
         Takes the parameters from the config.yaml file
+        Returns the values of the magnetizations m_z and m_x obtained from the Monte Carlo simulation (needed for testing the results of the function)
     """
     
     diagram_params = config["diagram_params"]
@@ -71,6 +72,8 @@ def single_run(config: dict) -> None:
     print(f"   m_z     |  {average_m_z:11.5f}  |  {analytical_m_z:10.5f}  |  {abs(average_m_z - analytical_m_z):9.5f}")
     print(f"   m_x     |  {average_m_x:11.5f}  |  {analytical_m_x:10.5f}  |  {abs(average_m_x - analytical_m_x):9.5f}")
     print("="*59 + "\n")
+    
+    return average_m_z, average_m_x
 
 
 def convergence_test(config: dict) -> None:
