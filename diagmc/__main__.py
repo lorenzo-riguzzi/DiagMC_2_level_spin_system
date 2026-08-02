@@ -1,10 +1,11 @@
 import sys
+from typing import Optional
 import yaml
 import argparse
 import scripts.simulation 
 
-def main(config_file: str = "config.yaml", mode_override: str | None = None) -> None:
-    """ Main function to execute the diagrammatic Monte Carlo simulation
+def run_simulation(config_file: str = "config.yaml", mode_override: Optional[str] = None) -> None:
+    """ Simulation function to execute the diagrammatic Monte Carlo simulation
         Reads the parameters from the config.yaml file and calls the required simulation
     """
     
@@ -17,6 +18,10 @@ def main(config_file: str = "config.yaml", mode_override: str | None = None) -> 
     
     mode = mode_override if mode_override is not None else config.get("mode")
     
+    if mode is None:
+        print("Error: No mode specified. Provide a subcommand (e.g. 'diagmc single_run') or set 'mode' in your config file.")
+        sys.exit(1)
+    
     if mode == "single_run":
         scripts.simulation.single_run(config)
     elif mode == "convergence_test":
@@ -28,16 +33,11 @@ def main(config_file: str = "config.yaml", mode_override: str | None = None) -> 
         sys.exit(1)
 
 
-def command_line_interface() -> None:
+def main() -> None:
+    """Main function to execute the code and implement the command line interface for the simulation."""
+    
     parser = argparse.ArgumentParser(
         description="Diagrammatic Monte Carlo simulation of a 2-level spin system."
-    )
-    
-    parser.add_argument(
-        "config_path",
-        nargs="?",
-        default=None,
-        help="Optional path to a .yaml configuration file when running main.py directly (e.g. python main.py custom_config.yaml)"
     )
     
     parser.add_argument(
@@ -51,10 +51,10 @@ def command_line_interface() -> None:
     subparsers.add_parser("single_run", help = "Run a single simulation with the specified parameters.")
     subparsers.add_parser("convergence_test", help = "Run a convergence test with the specified parameters.")
     subparsers.add_parser("sweep", help = "Run a parameter sweep with the specified parameters.")
-        
+    
     args = parser.parse_args()
-        
-    main(config_file = args.config, mode_override = args.subcommand)
+    
+    run_simulation(config_file = args.config, mode_override = args.subcommand)
 
 if __name__ == "__main__":
-    command_line_interface()
+    main()

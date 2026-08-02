@@ -216,10 +216,13 @@ def test_try_add_segment():
     
     assert diagram.number_vertices == 6 #Ensures that the number of vertices is correctly updated
     
+def test_try_add_segment_at_the_end_of_the_list():
+    
     """
         check how the method works when the segment is added at the end of the list.
         Ensures that, finding tau_after_f and index in the same way in which they are found in the method random_try_add_segment, they are chosen correctly to be beta and number_vertices 
     """
+    diagram = Diagram(beta = 5.0, s_0= -1, vertices=[3.0, 1.0, 2.0, 1.5, 1.8, 4.0], h=0.5, Gamma=1.0)
     
     tau_i = 4.2
     tau_f = 4.8
@@ -263,8 +266,12 @@ def test_try_remove_segment():
     assert pytest.approx(diagram.sum_with_alternating_sign) == 1.2 #Ensures that the sum with alternating sign is correctly updated
     
     assert diagram.number_vertices == 4 #Ensures that the number of vertices is correctly updated
+
+def test_try_remove_segment_with_tau_f_equal_beta():
     
     """We ensure that, if we remove the last possible segment, tau_after_f = beta """
+    
+    diagram = Diagram(beta = 5.0, s_0= 1, vertices = [1.0, 2.0, 4.5, 4.7], h=0.5, Gamma=1.0)
     
     diagram.try_remove_segment(0.99, remove_index=2)
     assert pytest.approx(diagram.vertices) == [1.0, 2.0, 4.5, 4.7] #Ensures that the segment is not removed since the acceptance rate is 0.9824769037
@@ -303,7 +310,7 @@ def test_random_try_add_segment():
     
     assert pytest.approx(diagram1.vertices) == diagram2.vertices
 
-def test_random_try_remove_segment():
+def test_random_try_remove_segment_with_no_vertices():
     
     """Checks that nothing happens if we start with a diagram with no vertices"""
     
@@ -311,6 +318,8 @@ def test_random_try_remove_segment():
     
     diagram.random_try_remove_segment() 
     assert diagram.vertices == []
+    
+def test_random_try_remove_segment():
     
     """Asserts that the random_try_remove_segment method is deterministic once the seed is fixed """
     

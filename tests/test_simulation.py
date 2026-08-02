@@ -118,7 +118,7 @@ def test_single_run_invalid_vertices():
         single_run(invalid_config_odd_vertices)
     
     
-def test_single_run_invalid_N_thermalization_and_N_runs():
+def test_single_run_invalid_N_thermalization():
     
     """ Tests that, if the N_thermalization in the config.yaml file is negative, a ValueError is raised """
     
@@ -139,6 +139,8 @@ def test_single_run_invalid_N_thermalization_and_N_runs():
     
     with pytest.raises(ValueError): 
         single_run(invalid_config_negative_N_thermalization)
+
+def test_single_run_invalid_N_runs():
     
     """ Tests that, if the N_runs in the config.yaml file is negative, a ValueError is raised """
     

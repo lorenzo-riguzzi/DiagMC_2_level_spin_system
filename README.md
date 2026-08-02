@@ -51,7 +51,7 @@ The user can run the simulation specified in the [config.yaml](config.yaml) by r
 $ diagmc -c config.yaml
 ```
 
-Instead of *config.yaml* users can specify their own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling [main.py](main.py) or the *diagmc* command. Users can thus simply run:
+Instead of *config.yaml* users can specify their own configuration file in .yaml format with the desired name. This file is the configuration input file required to perform a calculation. An example [config.yaml](config.yaml) is already furnished and can be used and modified to run the simulation. If the user uses a configuration file with this name it is not necessary to specify the name when calling the *diagmc* command. Users can thus simply run:
 
 ```bash
 $ diagmc
@@ -64,14 +64,20 @@ $ diagmc -c config.yaml convergence_test
 ```
 
 where the *-c config.yaml* can be avoided if the user uses a configuration file with the name *config.yaml.
-The simulation can also still be used calling with python the standard main function and specifying the configuration file and the required mode as here, for example, for the *convergence_test* calculation:
+Notice that if you want to call the *diagmc* command from any other folder than the root folder you need either to have a configuration file in that folder or to specify the path to reach the required configuration file. For example, if you are running the simulation from the [tests](tests) folder you need to specify:
 
 ```bash
-$ python main.py -c config.yaml convergence_test
+$ diagmc -c ../config.yaml
 ```
 
-Also here *-c config.yaml* can be avoided if one uses a configuration file with the name *config.yaml* and if the mode option is not specified the one written in the [config.yaml](config.yaml) file is used.
+The *diagmc* command is the most convenient way to run the simulation, but it can also be run with the standard python commands such as:
 
+```bash
+$ python -m diagmc
+$ python diagmc/__main__.py
+```
+
+with the same previously used addition to specify from command line the configuration file required and the type of calculation to run.
 
 If the user performs a *convergence_test* or a *sweep* calculation the results are printed in a *.csv* file. These results can be visualized graphically using the scripts in the [plots](plots) folder. To visualize the results of the magnetizations as functions of the number of MC runs of a convergence test calculation run:
 
@@ -177,12 +183,12 @@ This is the input file of the code and is the only one that needs to be modified
 
 For the first mode a single Monte Carlo simulation is performed using the diagram specified in *diagram_params*. The second one performs a convergence test by running several Monte Carlo simulations at different values of *N_runs*. To perform this kind of calculation the user needs to additionally specify the beginning and the ending values *N_start* and *N_end* of *N_runs* and the step *N_step* that separate each used value of *N_runs*. Eventually the user needs to specify the accuracy threshold that he wants to achieve with the convergence test, expressed as percentage and the name of the output file. The accuracy threshold is the the percentage error accepted for the MC magnetization with respect to the analytical value. The last mode instead allows to chose a variable among those that define a diagram ($h$, $\Gamma$ and $\beta$) and perform a sweep for several values of that variable. Here the user needs to specify the variable over which the sweep will be performed, its starting value *variable_start* and its ending value *variable_end* together with the step *variable_step* that separates two consecutive values of the variable (pay ATTENTION on the fact that the $\beta$ variable, even during the sweep, can only be positive, while $h$ and $\Gamma$ do not have limitations on their possible values, so if $\beta$ is chosen to be the variable the sweeping range must be chosen in such a way that it does not include negative values).
 
-The user can also define his own alternative [config.yaml](config.yaml) file to use in the simulation, following the same structure of the furnished one. For calling a user defined configuration file named, for example, *alternative_config.yaml*, the user just need to specify it as an argument when calling the main function.
+The user can also define his own alternative [config.yaml](config.yaml) file to use in the simulation, following the same structure of the furnished one. For calling a user defined configuration file named, for example, *alternative_config.yaml*, the user just need to specify it as an argument when calling the main function with the *diagmc* command.
 
 
-### [main.py](main.py)
+### [diagmc/__main__.py](diagmc/__main__.pymain.py)
 
-This contains the main function of the code, which performs the required simulation following the instructions of the configuration file. It calls either the *single_run* function, the *convergence_test* function or the *sweep* function. If no argument is specified when calling [main.py](main.py), the function uses a file named [config.yaml](config.yaml), as the one already furnished.
+This contains the main function of the code, which performs the required simulation following the instructions of the configuration file. It calls either the *single_run* function, the *convergence_test* function or the *sweep* function. It is executed with the *digamc* command and if no argument is specified with *-c* when calling it, the function uses a file named [config.yaml](config.yaml), as the one already furnished.
 
 ### [scripts/diagram.py](scripts/diagram.py)
 

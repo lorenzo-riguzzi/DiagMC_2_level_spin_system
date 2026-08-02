@@ -2,12 +2,22 @@ import os
 from setuptools import setup, find_packages
 import pathlib
 
-# view filename
+
+""" Setup script to install all the required dependencies for the simulation.
+    The required packages are read from the requirements.txt file (DO NOT DELETE IT!).
+    The script generates the diagmc command to run the simulation from command line (see documentation for details).
+"""
+
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    with open(os.path.join(os.path.dirname(__file__), fname)) as f:
+        return f.read()
 
 def get_requirements():
     reqpath = pathlib.Path("./requirements.txt")
+    
+    if not reqpath.exists():
+        return []
+    
     return [line.strip() for line in reqpath.read_text().splitlines() if line.strip()]
 
 project_name = "diagmc"
@@ -22,9 +32,10 @@ setup(
     packages=find_packages(),
     install_requires= get_requirements(),
     long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     entry_points={
         "console_scripts": [
-            "diagmc = main:command_line_interface",
+            "diagmc = diagmc.__main__:main",
         ],
     }
 )
