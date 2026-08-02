@@ -186,7 +186,7 @@ For the first mode a single Monte Carlo simulation is performed using the diagra
 The user can also define his own alternative [config.yaml](config.yaml) file to use in the simulation, following the same structure of the furnished one. For calling a user defined configuration file named, for example, *alternative_config.yaml*, the user just need to specify it as an argument when calling the main function with the *diagmc* command.
 
 
-### [diagmc/__main__.py](diagmc/__main__.pymain.py)
+### [diagmc/\_\_main\_\_.py](diagmc/__main__.py)
 
 This contains the main function of the code, which performs the required simulation following the instructions of the configuration file. It calls either the *single_run* function, the *convergence_test* function or the *sweep* function. It is executed with the *digamc* command and if no argument is specified with *-c* when calling it, the function uses a file named [config.yaml](config.yaml), as the one already furnished.
 

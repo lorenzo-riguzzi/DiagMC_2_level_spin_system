@@ -52,7 +52,7 @@ def test_single_run_invalid_s_0():
     with pytest.raises(ValueError): 
         single_run(invalid_config_s_0)
     
-def test_single_run_invalid_vertices():
+def test_single_run_negative_vertex():
     
     """ Tests that, if a vertex in the config.yaml file is negative, a ValueError is raised """
     
@@ -75,6 +75,8 @@ def test_single_run_invalid_vertices():
     with pytest.raises(ValueError): 
         single_run(invalid_config_negative_vertex)
         
+def test_single_run_vertex_greater_than_beta():
+        
     """ Tests that, if a vertex in the config.yaml file is greater than beta, a ValueError is raised """
     
     invalid_config_vertex_greater_than_beta = {
@@ -95,6 +97,8 @@ def test_single_run_invalid_vertices():
     
     with pytest.raises(ValueError): 
         single_run(invalid_config_vertex_greater_than_beta)
+
+def test_single_run_odd_number_of_vertices():
         
     """ Tests that, if the number of vertices in the config.yaml file is odd, a ValueError is raised """
     

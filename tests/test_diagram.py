@@ -17,15 +17,26 @@ def test_zero_beta():
     with pytest.raises(ValueError):
         Diagram(beta=0.0)
 
-def test_s_0_value():
+def test_s_0_equal_0():
     
     """Tests that if s_0 is not -1 (spin down) or +1 (spin up) a ValueError is raised"""
     
     with pytest.raises(ValueError):
         Diagram(beta=1.0, s_0=0)
+
+def test_s_0_greater_than_1():
+    
+    """Tests that if s_0 is not -1 (spin down) or +1 (spin up) a ValueError is raised"""
     
     with pytest.raises(ValueError):
         Diagram(beta=1.0, s_0=2)
+        
+def test_s_0_less_than_minus_1():
+    
+    """Tests that if s_0 is not -1 (spin down) or +1 (spin up) a ValueError is raised"""
+    
+    with pytest.raises(ValueError):
+        Diagram(beta=1.0, s_0=-2)
 
 def test_number_of_vertices_is_even():
     
@@ -34,22 +45,30 @@ def test_number_of_vertices_is_even():
     with pytest.raises(ValueError):
         Diagram(beta=1.0, s_0=1, vertices=[0.2, 0.5, 0.8])
 
-def test_vertices_maximum():
+def test_max_vertex_equal_beta():
     
-    """Tests that if any vertex is greater than or equal to beta, a ValueError is raised"""
+    """Tests that if any vertex is equal to beta, a ValueError is raised"""
     
     with pytest.raises(ValueError):
         Diagram(beta=1.0, vertices=[0.5, 1.0])
+
+def test_max_vertex_greater_than_beta():
+    
+    """Tests that if any vertex is greater than beta, a ValueError is raised"""
     
     with pytest.raises(ValueError):
         Diagram(beta=1.0, vertices=[0.9, 1.5, 0.6, 0.2])
 
-def test_vertices_minimum():
+def test_min_vertex_equal_zero():
     
-    """Tests that if any vertex is less than or equal to zero, a ValueError is raised"""
+    """Tests that if any vertex is equal to zero, a ValueError is raised"""
     
     with pytest.raises(ValueError):
         Diagram(beta=1.0, vertices=[0.0, 0.5, 0.8, 0.9])
+
+def test_min_vertex_less_than_zero():
+    
+    """Tests that if any vertex is less than zero, a ValueError is raised"""
     
     with pytest.raises(ValueError):
         Diagram(beta=1.0, vertices=[-0.1, 0.2, 0.3])
