@@ -9,12 +9,17 @@ from scripts.simulation import single_run, convergence_test, sweep
 
 def test_single_run_invalid_beta():
     
-    """ Tests that, if the beta in the config.yaml file is negative, a ValueError is raised """
+    """ Tests that, if the beta in the config.yaml file is negative, a ValueError is raised 
+    
+        GIVEN: a config dictionary with a negative beta
+        WHEN: the single_run method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config_beta = {
         "mode": "single_run",
         "diagram_params": {
-            "beta": -1.0,  # Invalid negative beta
+            "beta": -1.0, 
             "s_0": 1,
             "h": 1.0,
             "Gamma": 0.5,
@@ -32,13 +37,18 @@ def test_single_run_invalid_beta():
 
 def test_single_run_invalid_s_0():
     
-    """ Tests that, if the s_0 in the config.yaml file is not +/- 1, a ValueError is raised """
+    """ Tests that, if the s_0 in the config.yaml file is not +/- 1, a ValueError is raised 
+    
+        GIVEN: a config dictionary with an invalid s_0 (non-integer)
+        WHEN: the single_run method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config_s_0 = {
         "mode": "single_run",
         "diagram_params": {
             "beta": 1.0,
-            "s_0": 0.5, # Invalid non-integer s_0
+            "s_0": 0.5,
             "h": 1.0,
             "Gamma": 0.5,
             "seed_number": 42
@@ -54,14 +64,19 @@ def test_single_run_invalid_s_0():
     
 def test_single_run_negative_vertex():
     
-    """ Tests that, if a vertex in the config.yaml file is negative, a ValueError is raised """
+    """ Tests that, if a vertex in the config.yaml file is negative, a ValueError is raised 
+    
+        GIVEN: a config dictionary with a negative vertex in the vertices list
+        WHEN: the single_run method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config_negative_vertex = {
         "mode": "single_run",
         "diagram_params": {
             "beta": 1.0,
             "s_0": 1,
-            "vertices": [-0.1, 0.2, 0.3, 0.4], # Invalid negative vertex
+            "vertices": [-0.1, 0.2, 0.3, 0.4],
             "h": 1.0,
             "Gamma": 0.5,
             "seed_number": 42
@@ -77,14 +92,19 @@ def test_single_run_negative_vertex():
         
 def test_single_run_vertex_greater_than_beta():
         
-    """ Tests that, if a vertex in the config.yaml file is greater than beta, a ValueError is raised """
+    """ Tests that, if a vertex in the config.yaml file is greater than beta, a ValueError is raised 
+    
+        GIVEN: a config dictionary with a vertex greater than beta in the vertices list
+        WHEN: the single_run method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config_vertex_greater_than_beta = {
         "mode": "single_run",
         "diagram_params": {
             "beta": 1.0,
             "s_0": 1,
-            "vertices": [0.1, 0.2, 0.4, 2.3], # Invalid vertex greater than beta
+            "vertices": [0.1, 0.2, 0.4, 2.3],
             "h": 1.0,
             "Gamma": 0.5,
             "seed_number": 42
@@ -100,14 +120,19 @@ def test_single_run_vertex_greater_than_beta():
 
 def test_single_run_odd_number_of_vertices():
         
-    """ Tests that, if the number of vertices in the config.yaml file is odd, a ValueError is raised """
+    """ Tests that, if the number of vertices in the config.yaml file is odd, a ValueError is raised 
+    
+        GIVEN: a config dictionary with an odd number of vertices in the vertices list
+        WHEN: the single_run method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config_odd_vertices = {
         "mode": "single_run",
         "diagram_params": {
             "beta": 1.0,
             "s_0": 1,
-            "vertices": [0.1, 0.2, 0.4], # Invalid odd number of vertices
+            "vertices": [0.1, 0.2, 0.4],
             "h": 1.0,
             "Gamma": 0.5,
             "seed_number": 42
@@ -124,7 +149,12 @@ def test_single_run_odd_number_of_vertices():
     
 def test_single_run_invalid_N_thermalization():
     
-    """ Tests that, if the N_thermalization in the config.yaml file is negative, a ValueError is raised """
+    """ Tests that, if the N_thermalization in the config.yaml file is negative, a ValueError is raised 
+    
+        GIVEN: a config dictionary with a negative N_thermalization
+        WHEN: the single_run method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config_negative_N_thermalization = {
         "mode": "single_run",
@@ -136,7 +166,7 @@ def test_single_run_invalid_N_thermalization():
             "seed_number": 42
         },
         "simulation_params": {
-            "N_thermalization": -100, # Invalid negative N_thermalization 
+            "N_thermalization": -100, 
             "N_runs": 1000 
         }
     }
@@ -146,7 +176,12 @@ def test_single_run_invalid_N_thermalization():
 
 def test_single_run_invalid_N_runs():
     
-    """ Tests that, if the N_runs in the config.yaml file is negative, a ValueError is raised """
+    """ Tests that, if the N_runs in the config.yaml file is negative, a ValueError is raised 
+    
+        GIVEN: a config dictionary with a negative N_runs
+        WHEN: the single_run method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config_negative_N_runs = {
         "mode": "single_run",
@@ -159,7 +194,7 @@ def test_single_run_invalid_N_runs():
         },
         "simulation_params": {
             "N_thermalization": 100, 
-            "N_runs": -1000 # Invalid negative N_runs
+            "N_runs": -1000 
         }
     }
     
@@ -168,7 +203,12 @@ def test_single_run_invalid_N_runs():
     
 def test_single_run_empty_config():
     
-    """ Tests that a KeyError is raised when an empty config dictionary is passed to single_run """
+    """ Tests that a KeyError is raised when an empty config dictionary is passed to single_run 
+    
+        GIVEN: an empty config dictionary
+        WHEN: the single_run method is called with this config
+        THEN: a KeyError is raised
+    """
     
     empty_config = {}
     
@@ -177,7 +217,12 @@ def test_single_run_empty_config():
 
 def test_single_run_is_deterministic(capsys):
     
-    """ Tests that, if the seed is fixed, the results of single_run are deterministic """
+    """ Tests that, if the seed is fixed, the results of single_run are deterministic 
+    
+        GIVEN: a valid config dictionary with a fixed seed
+        WHEN: the single_run method is called twice with this config
+        THEN: the outputs of both runs are identical
+    """
     
     config = {
         "mode": "single_run",
@@ -224,12 +269,17 @@ valid_config_convergence = {
 
 def test_convergence_test_negative_N_start():
     
-    """ Tests that, if the N_start in the config.yaml file is negative, a ValueError is raised """
+    """ Tests that, if the N_start in the config.yaml file is negative, a ValueError is raised 
+    
+        GIVEN: a config dictionary with a negative N_start
+        WHEN: the convergence_test method is called with this config
+        THEN: a ValueError is raised
+    """
     
     wrong_config_negative_N_start = copy.deepcopy(valid_config_convergence)
     wrong_config_negative_N_start["mode_options"]={
         "convergence_test": {
-            "N_start": -10, # Invalid negative N_start
+            "N_start": -10,
             "N_end": 30,
             "N_step": 10,
             "accuracy": 0.05,
@@ -243,7 +293,12 @@ def test_convergence_test_negative_N_start():
 
 def test_convergence_test_N_end_lower_than_N_start():
     
-    """ Tests that, if the N_end in the config.yaml file is lower than N_start, a ValueError is raised """
+    """ Tests that, if the N_end in the config.yaml file is lower than N_start, a ValueError is raised 
+    
+        GIVEN: a config dictionary with N_end lower than N_start
+        WHEN: the convergence_test method is called with this config
+        THEN: a ValueError is raised
+    """
     
     wrong_config_N_end_lower_than_n_start = copy.deepcopy(valid_config_convergence)
     wrong_config_N_end_lower_than_n_start["mode_options"]={
@@ -261,7 +316,12 @@ def test_convergence_test_N_end_lower_than_N_start():
 
 def test_convergence_test_output_files_created():
     
-    """ Verifies that the .csv output files are created after running convergence_test with valid parameters """
+    """ Verifies that the .csv output files are created after running convergence_test with valid parameters 
+    
+        GIVEN: a valid config dictionary for convergence_test
+        WHEN: the convergence_test method is called with this config
+        THEN: the output .csv file is created and contains the expected columns
+    """
     
     convergence_test(valid_config_convergence)
     
@@ -304,7 +364,12 @@ valid_config_sweep = {
 
 def test_invalid_sweep_variable():
     
-    """ Test that a ValueError is raised when an invalid variable is given as input """
+    """ Tests that a ValueError is raised when an invalid variable is given as input 
+    
+        GIVEN: a config dictionary with an invalid variable for sweep (for example "s_0")
+        WHEN: the sweep method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
     invalid_config["mode_options"]["sweep"]["variable"] = "s_0"
@@ -312,7 +377,13 @@ def test_invalid_sweep_variable():
         sweep(invalid_config)
 
 def test_invalid_sweep_test():
-    """ Tests that a ValueError is raised when variable_step <= 0 """
+    
+    """ Tests that a ValueError is raised when variable_step <= 0 
+    
+        GIVEN: a config dictionary with variable_step <= 0
+        WHEN: the sweep method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
     invalid_config["mode_options"]["sweep"]["variable_step"] = -0.1
@@ -321,7 +392,12 @@ def test_invalid_sweep_test():
 
 def test_invalid_sweep_range():
     
-    """ Tests that a ValueError is raised when variable_start >= variable_end """
+    """ Tests that a ValueError is raised when variable_start >= variable_end 
+    
+        GIVEN: a config dictionary with variable_start >= variable_end
+        WHEN: the sweep method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
     invalid_config["mode_options"]["sweep"]["variable_start"] = 2.0
@@ -331,7 +407,12 @@ def test_invalid_sweep_range():
 
 def test_negative_N_runs_sweep():
     
-    """ Tests that a ValueError is raised when N_runs is negative in the config for sweep """
+    """ Tests that a ValueError is raised when N_runs is negative in the config for sweep 
+    
+        GIVEN: a config dictionary with a negative N_runs
+        WHEN: the sweep method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
     invalid_config["simulation_params"]["N_runs"] = -100
@@ -340,7 +421,12 @@ def test_negative_N_runs_sweep():
 
 def test_negative_N_thermalization_sweep():
     
-    """ Tests that a ValueError is raised when N_thermalization is negative in the config for sweep """
+    """ Tests that a ValueError is raised when N_thermalization is negative in the config for sweep 
+    
+        GIVEN: a config dictionary with a negative N_thermalization
+        WHEN: the sweep method is called with this config
+        THEN: a ValueError is raised
+    """
     
     invalid_config = copy.deepcopy(valid_config_sweep)
     invalid_config["simulation_params"]["N_thermalization"] = -5
@@ -349,7 +435,12 @@ def test_negative_N_thermalization_sweep():
 
 def test_sweep_output_files_created():
     
-    """ Verifies that the .csv output files are created after running sweep with valid parameters """
+    """ Verifies that the .csv output files are created after running sweep with valid parameters 
+    
+        GIVEN: a valid config dictionary for the sweep
+        WHEN: the sweep method is called with this config
+        THEN: the .csv output files are created and they contain the expected columns
+    """
     
     sweep(valid_config_sweep)
     
