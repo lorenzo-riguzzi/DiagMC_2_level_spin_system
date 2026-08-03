@@ -200,6 +200,7 @@ def convergence_test(config: dict) -> None:
     convergence_test_time = time.perf_counter() - start_time
 
     print('\n' + f"Convergence test performed successfully in {convergence_test_time:.2f} seconds!" + "\n")
+    print("\n" + f"Convergence test results saved successfully in '{output_dir}' directory as '{output_name}'" + "\n")
 
 def sweep(config: dict) -> None:
     

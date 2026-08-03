@@ -3,6 +3,8 @@ This program implements a Diagrammatic Monte Carlo (DMC) simulation of a two lev
 
 ## Installation and tests
 
+This software was developed on a Linux machine with [Python 3.10.12](https://www.python.org/downloads/release/python-31012/).
+The *python* command used to run this simulation must call *Python 3.x*, otherwise use *python3*.
 To clone the repository on your local machine type:
 
 ```bash
@@ -13,7 +15,7 @@ $ cd DiagMC_2_level_spin_system
 Before installing everything for the simulation and working with it, you are suggested to create a virtual environment using [venv](https://docs.python.org/3/library/venv.html):
 
 ```bash
-$ python3 -m venv .venv
+$ python -m venv .venv
 $ source .venv/bin/activate
 ```
 
@@ -63,7 +65,7 @@ Through this command it is possible to chose directly from the terminal the type
 $ diagmc -c config.yaml convergence_test
 ```
 
-where the *-c config.yaml* can be avoided if the user uses a configuration file with the name *config.yaml.
+where the *-c config.yaml* can be avoided if the user uses a configuration file with the name *config.yaml*.
 Notice that if you want to call the *diagmc* command from any other folder than the root folder you need either to have a configuration file in that folder or to specify the path to reach the required configuration file. For example, if you are running the simulation from the [tests](tests) folder you need to specify:
 
 ```bash
