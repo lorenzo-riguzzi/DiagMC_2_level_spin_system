@@ -29,7 +29,7 @@ TypeErrors are checked with [mypy](https://mypy.readthedocs.io/en/stable/). To v
 $ python -m mypy . --explicit-package-bases --ignore-missing-imports
 ```
 
-The files that perform unit testing are contained in the [tests](tests) folder and are [test_diagram.py](tests/test_diagram.py) and [test_simulation.py](tests/test_simulation.py). These contain the tests relative to the function in the [diagram.py](scripts/diagram.py) file and [simulation.py](scripts/simulation.py) file respectively. Tests are performed using [pytest](https://happytest.readthedocs.io/en/latest/contents/). To ensure that all the tests are passed run:
+The files that perform unit testing are contained in the [tests](tests) folder and are [test_diagram.py](tests/test_diagram.py), [test_simulation.py](tests/test_simulation.py) and [test_cli.py](tests/test_cli.py). These contain the tests relative to the function in the [diagram.py](scripts/diagram.py) file and [simulation.py](scripts/simulation.py) file. Further details on them can be found in the [tests](#tests) section. Tests are performed using [pytest](https://happytest.readthedocs.io/en/latest/contents/). To ensure that all the tests are passed run:
 
 ```bash
 $ python -m pytest
@@ -209,6 +209,14 @@ This file implements the three different simulation modes. All these functions t
 - *single_run*: This function creates a Diagram_Random object following the instructions of the configuration file and uses it to evaluate the analytical values of the magnetizations and those obtained with the MC estimators. Once it finishes it prints on terminal the time taken to perform the simulation and both the MC and the analytical values of the two magnetizations. It also prints the modulus of the difference between the MC estimated value and the analytical one.
 - *convergence_test*: This function allows to perform a convergence test simulation by performing an MC cycle and evaluating *m_x* and *m_z* for different values of *N_runs*. The aim of this function is finding the minimum value of $N$ among the proposed ones such that the required accuracy is reached. This value can then be used as an optimized value to use in subsequent simulations in order to maximize the efficiency and still obtain reliable results. At the end of the simulation the function creates a *.csv* file (whose name can always be specified in the configuration file) which contains as columns: the number of MC runs performed, the MC values of *m_z*, their absolute difference *error_m_z* with respect to the analytical one and the accuracy threshold *threshold_m_z*, which is a constant value obtained by multiplying the analytical value of *m_z* by the required accuracy in the configuration files. The rest of the columns contain the same quantities for *m_x*. After this, the function analyses the obtained results and prints on screen the values of N after which the values of the errors of *m_z* and *m_x* are always below the required accuracy threshold.
 - *sweep*: This function performs the simulation for several different diagrams (one for each required value of the sweeping variable in the configuration file). During its loop it evaluates, for each of these diagrams, the MC estimated and the analytical magnetizations and prints them in a *.csv* file whose name is always specified in the configuration file. The output also contains the values of the two other quantities over which the sweep is not done, since they will be later used when plotting the results.
+
+### [tests](tests)
+
+This folder contains the test files to check that the simulation works. Test files are divided in the following way:
+
+- [test_diagram.py](tests/test_diagram.py): includes the test for the *Diagram* and *Diagram_Random* classes wrote in the [diagram.py](scripts/diagram.py). These tests cover all the functions in the classes, ensuring that  formula are implemented correctly and that the random functions become deterministic once the seed is fixed;
+- [test_simulation.py](tests/test_simulation.py): includes the tests for the functions defined in the [simulation.py](scripts/simulation.py) file. These tests that the functions defined for the different modes of the simulation produce the expected output files and that the MC results are consistent both with their analytical values and with those one have in some relevant limits within certain error thresholds;
+- [test_cli.py](tests/test_cli.py): includes the tests for the command  line interface implemented. They check that it works correctly with the given commands and gives errors when the input files are not correct.
 
 ## Theoretical background
 

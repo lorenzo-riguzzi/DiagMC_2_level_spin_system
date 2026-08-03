@@ -472,7 +472,7 @@ def test_sweep_output_files_created(valid_config_sweep):
     if os.path.exists(output_path):
         os.remove(output_path)
 
-# NEW POSITIVE TESTS ADDED FOR THE SIMULATION
+# NEW POSITIVE TESTS FOR THE SIMULATION
 
 def test_single_run_magnetizations_converge_to_analytical():
     
