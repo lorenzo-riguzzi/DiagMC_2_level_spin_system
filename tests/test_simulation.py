@@ -1,11 +1,11 @@
 """ Tests for the methods in the simulation.py file """
 
 import pytest
-import copy
 import pandas as pd
 import os
+import numpy as np
 from scripts.simulation import single_run, convergence_test, sweep
-from scripts.diagram import Diagram, Diagram_Random
+from scripts.diagram import Diagram
 
 
 def test_single_run_invalid_beta():
@@ -279,7 +279,7 @@ def test_convergence_test_negative_N_start(valid_config_convergence):
         THEN: a ValueError is raised
     """
     
-    wrong_config_negative_N_start = copy.deepcopy(valid_config_convergence)
+    wrong_config_negative_N_start = valid_config_convergence
     wrong_config_negative_N_start["mode_options"]={
         "convergence_test": {
             "N_start": -10,
@@ -303,8 +303,8 @@ def test_convergence_test_N_end_lower_than_N_start(valid_config_convergence):
         THEN: a ValueError is raised
     """
     
-    wrong_config_N_end_lower_than_n_start = copy.deepcopy(valid_config_convergence)
-    wrong_config_N_end_lower_than_n_start["mode_options"]={
+    wrong_config_N_end_lower_than_N_start = valid_config_convergence
+    wrong_config_N_end_lower_than_N_start["mode_options"]={
         "convergence_test": {
             "N_start": 40,
             "N_end": 30,
@@ -315,7 +315,7 @@ def test_convergence_test_N_end_lower_than_N_start(valid_config_convergence):
     }
     
     with pytest.raises(ValueError):
-        convergence_test(wrong_config_N_end_lower_than_n_start)
+        convergence_test(wrong_config_N_end_lower_than_N_start)
 
 def test_convergence_test_output_files_created(valid_config_convergence):
     
@@ -379,7 +379,7 @@ def test_invalid_sweep_variable(valid_config_sweep):
         THEN: a ValueError is raised
     """
     
-    invalid_config = copy.deepcopy(valid_config_sweep)
+    invalid_config = valid_config_sweep
     invalid_config["mode_options"]["sweep"]["variable"] = "s_0"
     with pytest.raises(ValueError):
         sweep(invalid_config)
@@ -393,7 +393,7 @@ def test_invalid_sweep_test(valid_config_sweep):
         THEN: a ValueError is raised
     """
     
-    invalid_config = copy.deepcopy(valid_config_sweep)
+    invalid_config = valid_config_sweep
     invalid_config["mode_options"]["sweep"]["variable_step"] = -0.1
     with pytest.raises(ValueError):
         sweep(invalid_config)
@@ -407,7 +407,7 @@ def test_invalid_sweep_range(valid_config_sweep):
         THEN: a ValueError is raised
     """
     
-    invalid_config = copy.deepcopy(valid_config_sweep)
+    invalid_config = valid_config_sweep
     invalid_config["mode_options"]["sweep"]["variable_start"] = 2.0
     invalid_config["mode_options"]["sweep"]["variable_end"] = 0.1
     with pytest.raises(ValueError):
@@ -422,7 +422,7 @@ def test_negative_N_runs_sweep(valid_config_sweep):
         THEN: a ValueError is raised
     """
     
-    invalid_config = copy.deepcopy(valid_config_sweep)
+    invalid_config = valid_config_sweep
     invalid_config["simulation_params"]["N_runs"] = -100
     with pytest.raises(ValueError):
         sweep(invalid_config)
@@ -436,7 +436,7 @@ def test_negative_N_thermalization_sweep(valid_config_sweep):
         THEN: a ValueError is raised
     """
     
-    invalid_config = copy.deepcopy(valid_config_sweep)
+    invalid_config = valid_config_sweep
     invalid_config["simulation_params"]["N_thermalization"] = -5
     with pytest.raises(ValueError):
         sweep(invalid_config)
@@ -503,11 +503,10 @@ def test_single_run_magnetizations_converge_to_analytical():
     
     assert abs(m_z - analytical_m_z) < 0.05 * abs(analytical_m_z)
     assert abs(m_x - analytical_m_x) < 0.05 * abs(analytical_m_x)
-    
-# ADD THE SLOW TESTS HERE
 
 def test_simulation_mz_is_zero_at_zero_field():
-    """ Test that the magnetization m_z is close to zero when the external field h is set to zero
+    
+    """ Tests that the magnetization m_z is close to zero when the external field h is set to zero
     
         GIVEN: a valid config dictionary for single_run with h=0.0
         WHEN: single_run is called
@@ -530,7 +529,8 @@ def test_simulation_mz_is_zero_at_zero_field():
     assert abs(mz) < 0.005
 
 def test_m_z_and_m_x_symmetry_with_h():
-    """ Test that the magnetization m_z is antisymmetric with respect to the external field h, while m_x is symmetric
+    
+    """ Tests that the magnetization m_z is antisymmetric with respect to the external field h, while m_x is symmetric
     
         GIVEN: two valid config dictionaries for single_run, one with h and one with -h
         WHEN: single_run is called for both configs
@@ -566,7 +566,8 @@ def test_m_z_and_m_x_symmetry_with_h():
     assert abs(mx_1 - mx_2) < 0.005
 
 def test_m_z_and_m_x_symmetry_with_Gamma():
-    """ Test that the magnetization m_x is antisymmetric with respect to the external field Gamma, while m_z is symmetric
+    
+    """ Tests that the magnetization m_x is antisymmetric with respect to the external field Gamma, while m_z is symmetric
     
         GIVEN: two valid config dictionaries for single_run, one with Gamma and one with -Gamma
         WHEN: single_run is called for both configs
@@ -602,7 +603,8 @@ def test_m_z_and_m_x_symmetry_with_Gamma():
     assert abs(mx_1 + mx_2) < 0.005
 
 def test_strong_h_limit():
-    """ Test that the magnetization m_z approaches -1 as the external field h is much larger than Gamma, while m_x approaches 0 (for a beta not too high)
+    
+    """ Tests that the magnetization m_z approaches -1 as the external field h is much larger than Gamma, while m_x approaches 0 (for a beta not too high)
     
         GIVEN: a valid config dictionary for single_run with a large h
         WHEN: single_run is called
@@ -625,8 +627,59 @@ def test_strong_h_limit():
     assert abs(mz + 1.0) < 0.05
     assert abs(m_x) < 0.0005
 
+def test_weak_h_limit():
+    
+    """ Tests that the magnetization m_z approaches 0 as the external field h is much smaller than Gamma, while m_x approaches -tanh(beta * Gamma)
+    
+        GIVEN: a valid config dictionary for single_run with a small h
+        WHEN: single_run is called
+        THEN: the estimated m_z is close to 0 and m_x is close to -tanh(beta * Gamma) within a threshold of 5%
+    """
+    
+    config = {
+        "diagram_params": {
+            "beta": 5.0, "s_0": -1, "h": 0.01,
+            "Gamma": 10.0, "seed_number": 42
+        },
+        "simulation_params": {
+            "N_thermalization": 5000,
+            "N_runs": 100000
+        }
+    }
+    
+    mz, m_x = single_run(config)
+    
+    assert abs(mz) < 0.005
+    assert abs(m_x + np.tanh(5.0 * 10.0)) < 0.05 * np.tanh(5.0 * 10.0)
+
+def test_weak_Gamma_limit():
+    
+    """ Tests that the magnetization m_x approaches 0 as the transverse field Gamma is much smaller than h, while m_z approaches -tanh(beta * h)
+    
+        GIVEN: a valid config dictionary for single_run with a small Gamma
+        WHEN: single_run is called
+        THEN: the estimated m_x is close to 0 and m_z is close to -tanh(beta * h) within a threshold of 5%
+    """
+    
+    config = {
+        "diagram_params": {
+            "beta": 5.0, "s_0": -1, "h": 10.0,
+            "Gamma": 0.01, "seed_number": 42
+        },
+        "simulation_params": {
+            "N_thermalization": 5000,
+            "N_runs": 100000
+        }
+    }
+    
+    mz, m_x = single_run(config)
+    
+    assert abs(m_x) < 0.005
+    assert abs(mz + np.tanh(5.0 * 10.0)) < 0.05 * np.tanh(5.0 * 10.0)
+
 def test_strong_Gamma_limit():
-    """ Test that the magnetization m_x approaches -1 as the transverse field Gamma is much larger than h, while m_z approaches 0 (for a beta not too high)
+    
+    """ Tests that the magnetization m_x approaches -1 as the transverse field Gamma is much larger than h, while m_z approaches 0 (for a beta not too high)
     
         GIVEN: a valid config dictionary for single_run with a large Gamma
         WHEN: single_run is called
@@ -649,8 +702,9 @@ def test_strong_Gamma_limit():
     assert abs(m_x + 1.0) < 0.05
     assert abs(mz) < 0.005
     
-def test_strong_beta_limit():
-    """ Test that the magnetizations m_z and m_x approach the expected limit values as beta is very large (low temperatures)
+def test_high_beta_limit():
+    
+    """ Tests that the magnetizations m_z and m_x approach the expected limit values as beta is very large (low temperatures)
     
         GIVEN: a valid config dictionary for single_run with a large beta
         WHEN: single_run is called
@@ -677,7 +731,8 @@ def test_strong_beta_limit():
     assert abs(m_x - limit_m_x) < 0.05 * abs(limit_m_x)
 
 def test_small_beta_limit():
-    """ Test that the magnetizations m_z and m_x approach zero as beta is very small (high temperatures)
+    
+    """ Tests that the magnetizations m_z and m_x approach zero as beta is very small (high temperatures)
     
         GIVEN: a valid config dictionary for single_run with a small beta
         WHEN: single_run is called
@@ -700,5 +755,182 @@ def test_small_beta_limit():
     assert abs(mz) < 0.005
     assert abs(m_x) < 0.005
 
+def test_convergence_test_error_is_small_at_large_N(valid_config_convergence):
+    
+    """ Tests that the error in m_z and m_x decreases as N increases in convergence_test
+    
+        GIVEN: a valid config dictionary for convergence_test, with h and Gamma different from zero (in order not to have zero thresholds)
+        WHEN: convergence_test is called
+        THEN: the error in m_z and m_x decreases as N increases, and is below 5% for the largest N
+    """
+    
+    valid_config_convergence["mode_options"]["convergence_test"]["N_start"] = 500
+    valid_config_convergence["mode_options"]["convergence_test"]["N_end"] = 100000
+    valid_config_convergence["mode_options"]["convergence_test"]["N_step"] = 500
+    valid_config_convergence["mode_options"]["convergence_test"]["output_file"] = "test_conv_large_N.csv"
+    
+    convergence_test(valid_config_convergence)
+    
+    output_path = os.path.join("results", "test_conv_large_N.csv")
+    
+    dataframe = pd.read_csv(output_path)
+    
+    last_row = dataframe.iloc[-1]
+    
+    assert last_row["error_m_z"] < 0.05 * abs(last_row["m_z"])
+    assert last_row["error_m_x"] < 0.05 * abs(last_row["m_x"])
+    
+    if os.path.exists(output_path):
+        os.remove(output_path)
 
+def test_convergence_test_mean_error_decreases(valid_config_convergence):
+    
+    """ Tests that the mean error in m_z and m_x decreases as N increases in convergence_test
+    
+        GIVEN: a valid config dictionary for convergence_test, with h and Gamma different from zero (in order not to have zero thresholds)
+        WHEN: convergence_test is called
+        THEN: the mean error in m_z and m_x in the first half of the simulation is greater than the one in the second half of the simulation
+    """
+    
+    valid_config_convergence["mode_options"]["convergence_test"]["N_start"] = 500
+    valid_config_convergence["mode_options"]["convergence_test"]["N_end"] = 100000
+    valid_config_convergence["mode_options"]["convergence_test"]["N_step"] = 500
+    valid_config_convergence["mode_options"]["convergence_test"]["output_file"] = "test_conv_mean_error.csv"
+    
+    convergence_test(valid_config_convergence)
+    
+    output_path = os.path.join("results", "test_conv_mean_error.csv")
+    
+    dataframe = pd.read_csv(output_path)
+    
+    midpoint = len(dataframe) // 2
+    
+    errors_m_z_first_half = dataframe["error_m_z"].iloc[:midpoint].values
+    errors_m_z_second_half = dataframe["error_m_z"].iloc[midpoint:].values
+    errors_m_x_first_half = dataframe["error_m_x"].iloc[:midpoint].values
+    errors_m_x_second_half = dataframe["error_m_x"].iloc[midpoint:].values
+    
+    mean_error_m_z_first_half = np.mean(errors_m_z_first_half)
+    mean_error_m_z_second_half = np.mean(errors_m_z_second_half)
+    mean_error_m_x_first_half = np.mean(errors_m_x_first_half)
+    mean_error_m_x_second_half = np.mean(errors_m_x_second_half)
+    
+    assert mean_error_m_z_first_half > mean_error_m_z_second_half
+    assert mean_error_m_x_first_half > mean_error_m_x_second_half
+    
+    if os.path.exists(output_path):
+        os.remove(output_path)
+
+def test_sweep_h(valid_config_sweep):
+
+    """ Tests that the results of the sweep function with variable h are consistent with the analytical ones within a threshold of 5%
+
+        GIVEN: a valid config dictionary for sweep with variable h
+        WHEN: the sweep method is called with this config
+        THEN: the estimated m_z and m_x values are close to the analytical ones within a threshold of 5%
+        
+        NOTE: Avoid the h = 0 point, where m_z = 0 to avoid having threshold equal to 0
+    """
+    
+    valid_config_sweep["mode_options"]["sweep"]["variable"] = "h"
+    valid_config_sweep["mode_options"]["sweep"]["variable_start"] = -1.0
+    valid_config_sweep["mode_options"]["sweep"]["variable_end"] = 1.0
+    valid_config_sweep["mode_options"]["sweep"]["variable_step"] = 0.4
+    valid_config_sweep["mode_options"]["sweep"]["output_file"] = "test_sweep_h.csv"
+    valid_config_sweep["simulation_params"]["N_runs"] = 100000
+    valid_config_sweep["simulation_params"]["N_thermalization"] = 500
+    
+    sweep(valid_config_sweep)
+
+    output_path = os.path.join("results", "test_sweep_h.csv")
+    
+    dataframe = pd.read_csv(output_path)
+    
+    evaluated_m_z = dataframe["m_z (MC)"].values
+    analytical_m_z = dataframe["m_z (Analytical)"].values
+    evaluated_m_x = dataframe["m_x (MC)"].values
+    analytical_m_x = dataframe["m_x (Analytical)"].values
+    
+    errors_m_z = np.abs(evaluated_m_z - analytical_m_z)
+    errors_m_x = np.abs(evaluated_m_x - analytical_m_x)
+    
+    assert (errors_m_z < 0.05 * np.abs(analytical_m_z)).all()
+    assert (errors_m_x < 0.05 * np.abs(analytical_m_x)).all()
+    
+    os.remove(output_path)
+
+def test_sweep_Gamma(valid_config_sweep):
+
+    """ Tests that the results of the sweep function with variable Gamma are consistent with the analytical ones within a threshold of 5%
+
+        GIVEN: a valid config dictionary for sweep with variable Gamma
+        WHEN: the sweep method is called with this config
+        THEN: the estimated m_z and m_x values are close to the analytical ones within a threshold of 5%
+        
+        NOTE: Avoid the Gamma = 0 point, where m_x = 0 to avoid having threshold equal to 0
+    """
+    
+    valid_config_sweep["mode_options"]["sweep"]["variable"] = "Gamma"
+    valid_config_sweep["mode_options"]["sweep"]["variable_start"] = -1.0
+    valid_config_sweep["mode_options"]["sweep"]["variable_end"] = 1.0
+    valid_config_sweep["mode_options"]["sweep"]["variable_step"] = 0.4
+    valid_config_sweep["mode_options"]["sweep"]["output_file"] = "test_sweep_Gamma.csv"
+    valid_config_sweep["simulation_params"]["N_runs"] = 100000
+    valid_config_sweep["simulation_params"]["N_thermalization"] = 500
+    
+    sweep(valid_config_sweep)
+
+    output_path = os.path.join("results", "test_sweep_Gamma.csv")
+    
+    dataframe = pd.read_csv(output_path)
+    
+    evaluated_m_z = dataframe["m_z (MC)"].values
+    analytical_m_z = dataframe["m_z (Analytical)"].values
+    evaluated_m_x = dataframe["m_x (MC)"].values
+    analytical_m_x = dataframe["m_x (Analytical)"].values
+    
+    errors_m_z = np.abs(evaluated_m_z - analytical_m_z)
+    errors_m_x = np.abs(evaluated_m_x - analytical_m_x)
+    
+    assert (errors_m_z < 0.05 * np.abs(analytical_m_z)).all()
+    assert (errors_m_x < 0.05 * np.abs(analytical_m_x)).all()
+    
+    os.remove(output_path)
+
+
+def test_sweep_beta(valid_config_sweep):
+
+    """ Tests that the results of the sweep function with variable beta are consistent with the analytical ones within a threshold of 5%
+
+        GIVEN: a valid config dictionary for sweep with variable beta
+        WHEN: the sweep method is called with this config
+        THEN: the estimated m_z and m_x values are close to the analytical ones within a threshold of 5%
+    """
+    
+    valid_config_sweep["mode_options"]["sweep"]["variable"] = "beta"
+    valid_config_sweep["mode_options"]["sweep"]["variable_start"] = 1.0
+    valid_config_sweep["mode_options"]["sweep"]["variable_end"] = 5.0
+    valid_config_sweep["mode_options"]["sweep"]["variable_step"] = 1.0
+    valid_config_sweep["mode_options"]["sweep"]["output_file"] = "test_sweep_beta.csv"
+    valid_config_sweep["simulation_params"]["N_runs"] = 100000
+    valid_config_sweep["simulation_params"]["N_thermalization"] = 500
+    
+    sweep(valid_config_sweep)
+
+    output_path = os.path.join("results", "test_sweep_beta.csv")
+    
+    dataframe = pd.read_csv(output_path)
+    
+    evaluated_m_z = dataframe["m_z (MC)"].values
+    analytical_m_z = dataframe["m_z (Analytical)"].values
+    evaluated_m_x = dataframe["m_x (MC)"].values
+    analytical_m_x = dataframe["m_x (Analytical)"].values
+    
+    errors_m_z = np.abs(evaluated_m_z - analytical_m_z)
+    errors_m_x = np.abs(evaluated_m_x - analytical_m_x)
+    
+    assert (errors_m_z < 0.05 * np.abs(analytical_m_z)).all()
+    assert (errors_m_x < 0.05 * np.abs(analytical_m_x)).all()
+    
+    os.remove(output_path)
 
