@@ -88,6 +88,7 @@ $ python plots/plot_convergence.py convergence_output_name.csv
 ```
 
 where *convergence_output_name* is the name of the output that one wants to plot, that must be specified in the [config.yaml](config.yaml).
+If no name is specified the plotting function looks for a file named *convergence_test_results.csv*.
 For the results of a sweep calculation, instead, run:
 
 ```bash
@@ -95,6 +96,7 @@ $ python plots/plot_sweep.py sweep_output_name.csv
 ```
 
 where the name of the output is always to be specified in the [config.yaml](config.yaml).
+If no name is specified the plotting function looks for a file named *sweep_h.csv*.
 
 ## Example results
 
