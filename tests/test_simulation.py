@@ -510,7 +510,7 @@ def test_simulation_mz_is_zero_at_zero_field():
     
         GIVEN: a valid config dictionary for single_run with h=0.0
         WHEN: single_run is called
-        THEN: the estimated mz is close to zero by symmetry, within absolute tolerance 0.05
+        THEN: the estimated mz is close to zero by symmetry, within absolute tolerance 0.005
     """
     
     config = {
